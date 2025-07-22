@@ -1,0 +1,123 @@
+/* Context Menus */
+.context-menu {
+    position: absolute;
+    background-color: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    min-width: 150px;
+    z-index: 1002;
+    display: none;
+    padding: 2px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.context-menu-item {
+    height: 20px;
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.context-menu-item:hover {
+    background-color: #000080;
+    color: white;
+}
+
+.context-menu-item img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+.context-menu-separator {
+    height: 1px;
+    background-color: #808080;
+    margin: 2px 0;
+}
+
+/* Start Menu */
+.start-menu {
+    position: absolute;
+    bottom: 28px;
+    left: 1px;
+    width: 190px;
+    height: 280px;
+    background-color: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    z-index: 1001;
+    display: none;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.start-menu-header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 22px;
+    background: linear-gradient(to bottom, #000080 0%, #1084d0 50%, #000080 100%);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 10px 2px;
+    border-right: 1px solid #808080;
+    z-index: 1;
+}
+
+.start-menu-items {
+    display: flex;
+    position: relative;
+    height: 100%;
+}
+
+.start-menu-left {
+    width: 168px;
+    padding: 3px 0;
+    margin-left: 22px;
+    position: relative;
+    z-index: 2;
+}
+
+.start-menu-right {
+    width: 0px;
+    background-color: #808080;
+    border-left: 1px solid #000000;
+    display: none;
+}
+
+.start-menu-item {
+    height: 24px;
+    padding: 3px 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.start-menu-item:hover {
+    background-color: #000080;
+    color: white;
+}
+
+.start-menu-item img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+.start-menu-separator {
+    height: 1px;
+    background-color: #808080;
+    margin: 2px 0;
+}

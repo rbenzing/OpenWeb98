@@ -1,0 +1,207 @@
+/* Internet Explorer Styles */
+
+/* IE Toolbar */
+.ie-toolbar {
+    height: 28px;
+    background-color: #c0c0c0;
+    border-bottom: 1px solid #808080;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    gap: 2px;
+}
+
+.ie-toolbar-section {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.ie-toolbar-separator {
+    width: 1px;
+    height: 20px;
+    background-color: #808080;
+    margin: 0 2px;
+}
+
+.ie-toolbar-button {
+    width: 23px;
+    height: 22px;
+    background-color: #c0c0c0;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.ie-toolbar-button .sprite-icon {
+    margin: 0;
+}
+
+.ie-toolbar-button:hover:not(:disabled) {
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+}
+
+.ie-toolbar-button:active:not(:disabled) {
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+.ie-toolbar-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+    color: #808080;
+}
+
+/* IE Address Bar */
+.ie-address-bar-container {
+    height: 24px;
+    background-color: #c0c0c0;
+    border-bottom: 1px solid #808080;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    gap: 5px;
+}
+
+.ie-address-bar-container label {
+    font-size: 11px;
+    color: #000000;
+}
+
+.ie-address-bar {
+    flex: 1;
+    height: 18px;
+    background-color: white;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    font-size: 11px;
+}
+
+.ie-go-button {
+    width: 30px;
+    height: 18px;
+    background-color: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.ie-go-button:active {
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+/* IE Content Area */
+.ie-content {
+    flex: 1;
+    background-color: white;
+    overflow: auto;
+    border-top: 1px solid #808080;
+}
+
+.ie-page {
+    padding: 20px;
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.ie-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #000080;
+}
+
+.ie-header h1 {
+    color: #000080;
+    font-size: 18px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.ie-section {
+    margin-bottom: 15px;
+}
+
+.ie-section h2 {
+    color: #000080;
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.ie-section h3 {
+    color: #000080;
+    font-size: 12px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.ie-section p {
+    margin-bottom: 8px;
+    text-align: justify;
+}
+
+.ie-section ul {
+    margin-left: 20px;
+    margin-bottom: 8px;
+}
+
+.ie-section li {
+    margin-bottom: 3px;
+}
+
+.ie-links {
+    margin-top: 8px;
+}
+
+.ie-links a {
+    color: #0000ff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.ie-links a:hover {
+    color: #ff0000;
+}
+
+/* IE Status Bar */
+.ie-status-bar {
+    height: 20px;
+    background-color: #c0c0c0;
+    border-top: 1px solid #808080;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    font-size: 11px;
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+}
+
+.ie-status-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

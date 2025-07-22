@@ -1,0 +1,128 @@
+/* Taskbar */
+.taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background-color: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 1px;
+    z-index: 1000;
+}
+
+/* Start Button */
+.start-button {
+    height: 22px;
+    padding: 1px 2px;
+    margin-right: 2px;
+    display: flex;
+    align-items: center;
+    background-color: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    cursor: pointer;
+}
+
+.start-button:active {
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+.start-button img {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+}
+
+.start-button span {
+    font-weight: bold;
+    font-size: 11px;
+}
+
+/* Taskbar Divider */
+.taskbar-divider {
+    width: 1px;
+    height: 22px;
+    background-color: #808080;
+    margin: 0 2px;
+}
+
+/* Task Buttons Area */
+.task-buttons {
+    flex: 1;
+    display: flex;
+    height: 22px;
+    overflow: hidden;
+}
+
+.task-button {
+    height: 22px;
+    min-width: 125px;
+    max-width: 200px;
+    margin-right: 2px;
+    padding: 1px 4px;
+    background-color: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.task-button.active {
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+.task-button img {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+/* System Tray */
+.system-tray {
+    height: 22px;
+    display: flex;
+    align-items: center;
+    background-color: #c0c0c0;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 0 6px;
+    min-width: 120px;
+}
+
+.system-tray-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+    cursor: pointer;
+}
+
+.system-tray-icon:hover {
+    opacity: 0.8;
+}
+
+.system-tray-time {
+    font-size: 11px;
+    margin-left: 6px;
+    border-left: 1px solid #808080;
+    padding-left: 6px;
+    white-space: nowrap;
+}

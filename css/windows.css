@@ -1,0 +1,240 @@
+/* Windows Container */
+.window {
+    position: absolute;
+    background-color: #c0c0c0;
+    border: 2px solid;
+    border-top-color: #dfdfdf;
+    border-left-color: #dfdfdf;
+    border-right-color: #000000;
+    border-bottom-color: #000000;
+    min-width: 250px;
+    min-height: 150px;
+    z-index: 100;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    resize: both;
+    overflow: hidden;
+}
+
+/* Window Titlebar and Controls */
+.window-titlebar {
+    height: 18px;
+    background-color: #808080;
+    display: flex;
+    align-items: center;
+    padding: 0 3px;
+    cursor: move;
+}
+
+.window-titlebar.active {
+    background-color: #000080;
+    color: white;
+}
+
+.window-title {
+    flex: 1;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.window-controls {
+    display: flex;
+}
+
+.window-control {
+    width: 16px;
+    height: 14px;
+    margin-left: 2px;
+    background-color: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.window-control:active {
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+.window-control img {
+    width: 10px;
+    height: 10px;
+}
+
+/* Window Menu Bar */
+.window-menubar {
+    height: 19px;
+    background-color: #c0c0c0;
+    display: flex;
+    align-items: center;
+    padding: 0 2px;
+    border-bottom: 1px solid #808080;
+}
+
+.window-menu-item {
+    padding: 2px 6px;
+    font-size: 11px;
+    margin-right: 2px;
+    cursor: pointer;
+}
+
+.window-menu-item:hover {
+    background-color: #000080;
+    color: white;
+}
+
+.window-menu-item.active {
+    background-color: #000080;
+    color: white;
+}
+
+/* Dropdown Menu Styles */
+.window-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    min-width: 120px;
+    z-index: 1003;
+    display: none;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.window-dropdown-item {
+    height: 20px;
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.window-dropdown-item:hover {
+    background-color: #000080;
+    color: white;
+}
+
+.window-dropdown-separator {
+    height: 1px;
+    background-color: #808080;
+    margin: 2px 0;
+}
+
+/* Window Content Area */
+.window-content {
+    position: absolute;
+    top: 39px; /* Accounts for titlebar and menu bar */
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background-color: #c0c0c0;
+    overflow: hidden;
+    border: 1px inset #808080;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Custom Scrollbar Styling */
+.window-content::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+.window-content::-webkit-scrollbar-track {
+    background-color: #c0c0c0;
+}
+.window-content::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
+    border: 1px solid;
+    border-top-color: #000000;
+    border-left-color: #000000;
+    border-right-color: #dfdfdf;
+    border-bottom-color: #dfdfdf;
+}
+.window-content::-webkit-scrollbar-button {
+    background-color: #c0c0c0;
+    border: 1px solid;
+    border-top-color: #dfdfdf;
+    border-left-color: #dfdfdf;
+    border-right-color: #000000;
+    border-bottom-color: #000000;
+    display: block;
+    height: 16px;
+    width: 16px;
+}
+
+/* Resize Handles */
+.resize-handle {
+    position: absolute;
+    z-index: 10;
+}
+.resize-handle-n {
+    top: 0;
+    left: 3px;
+    right: 3px;
+    height: 3px;
+    cursor: n-resize;
+}
+.resize-handle-e {
+    top: 3px;
+    right: 0;
+    bottom: 3px;
+    width: 3px;
+    cursor: e-resize;
+}
+.resize-handle-s {
+    bottom: 0;
+    left: 3px;
+    right: 3px;
+    height: 3px;
+    cursor: s-resize;
+}
+.resize-handle-w {
+    top: 3px;
+    left: 0;
+    bottom: 3px;
+    width: 3px;
+    cursor: w-resize;
+}
+.resize-handle-ne {
+    top: 0;
+    right: 0;
+    width: 6px;
+    height: 6px;
+    cursor: ne-resize;
+}
+.resize-handle-se {
+    bottom: 0;
+    right: 0;
+    width: 6px;
+    height: 6px;
+    cursor: se-resize;
+}
+.resize-handle-sw {
+    bottom: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    cursor: sw-resize;
+}
+.resize-handle-nw {
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    cursor: nw-resize;
+}

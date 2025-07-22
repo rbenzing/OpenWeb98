@@ -1,0 +1,34 @@
+/* root.css */
+/* Import global styles */
+@import url('reset.css');
+
+/* Import global styles */
+@import url('global.css');
+
+/* Import desktop-related styles */
+@import url('desktop.css');
+
+/* Import taskbar styles */
+@import url('menus.css');
+
+/* Import taskbar styles */
+@import url('taskbar.css');
+
+/* Import window styles */
+@import url('windows.css');
+
+/* Import Explorer/File Explorer styles */
+@import url('explorer.css');
+
+/* Import Control Panel styles */
+@import url('controlPanel.css');
+
+/* Import Internet Explorer styles */
+@import url('internetExplorer.css');
+
+/* Import icon sprites */
+@import url('iconSprites.css');
+
+/* Import common forms and dialog controls */
+@import url('forms.css');
+@import url('dialog.css');

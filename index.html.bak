@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src https://win98icons.alexmeub.com 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <title>Windows 98 Desktop Clone</title>
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            font-family: "MS Sans Serif", Arial, sans-serif;
+        }
+
+        /* Font Face for authentic MS Sans Serif look */
+        @font-face {
+            font-family: "MS Sans Serif";
+            src: url('https://unpkg.com/98.css@0.1.17/dist/ms_sans_serif.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "MS Sans Serif";
+            src: url('https://unpkg.com/98.css@0.1.17/dist/ms_sans_serif_bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        /* Main Styles */
+        body {
+            background-color: #008080; /* Authentic Windows 98 teal */
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+            font-size: 11px;
+        }
+
+        /* Desktop Area */
+        .desktop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 28px; /* Authentic taskbar height */
+            overflow: auto;
+            padding: 5px;
+        }
+
+        /* Desktop Icons */
+        .desktop-icon {
+            width: 75px;
+            height: 80px;
+            margin: 5px;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            cursor: pointer;
+            position: absolute;
+        }
+
+        .desktop-icon img {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 5px;
+        }
+
+        .desktop-icon span {
+            color: white;
+            text-align: center;
+            font-size: 11px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+            max-width: 75px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 1px 2px;
+        }
+
+        .desktop-icon.selected span {
+            background-color: #000080;
+        }
+
+        /* Taskbar */
+        .taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 28px; /* Authentic height */
+            background-color: #c0c0c0;
+            border-top: 1px solid #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 1px;
+            z-index: 1000;
+        }
+
+        .start-button {
+            height: 22px;
+            padding: 1px 2px;
+            margin-right: 2px;
+            display: flex;
+            align-items: center;
+            background-color: #c0c0c0;
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+            border-right: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+            cursor: pointer;
+        }
+
+        .start-button:active {
+            border-top: 1px solid #000000;
+            border-left: 1px solid #000000;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .start-button img {
+            width: 16px;
+            height: 16px;
+            margin-right: 2px;
+        }
+
+        .start-button span {
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        .taskbar-divider {
+            width: 1px;
+            height: 22px;
+            background-color: #808080;
+            margin: 0 2px;
+        }
+
+        .task-buttons {
+            flex: 1;
+            display: flex;
+            height: 22px;
+            overflow: hidden;
+        }
+
+        .task-button {
+            height: 22px;
+            min-width: 125px;
+            max-width: 200px;
+            margin-right: 2px;
+            padding: 1px 4px;
+            background-color: #c0c0c0;
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+            border-right: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .task-button.active {
+            border-top: 1px solid #000000;
+            border-left: 1px solid #000000;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .task-button img {
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
+        }
+
+        .system-tray {
+            height: 22px;
+            display: flex;
+            align-items: center;
+            background-color: #c0c0c0;
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+            padding: 0 4px;
+        }
+
+        .system-tray-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
+        }
+
+        .system-tray-time {
+            font-size: 11px;
+            margin-left: 4px;
+            border-left: 1px solid #808080;
+            padding-left: 4px;
+        }
+
+        /* Windows */
+        .window {
+            position: absolute;
+            background-color: #c0c0c0;
+            border: 2px solid;
+            border-top-color: #dfdfdf;
+            border-left-color: #dfdfdf;
+            border-right-color: #000000;
+            border-bottom-color: #000000;
+            min-width: 250px;
+            min-height: 150px;
+            z-index: 100;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            resize: both;
+            overflow: hidden;
+        }
+
+        .window-titlebar {
+            height: 18px;
+            background-color: #808080;
+            display: flex;
+            align-items: center;
+            padding: 0 3px;
+            cursor: move;
+        }
+
+        .window-titlebar.active {
+            background-color: #000080;
+            color: white;
+        }
+
+        .window-title {
+            flex: 1;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 2px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .window-controls {
+            display: flex;
+        }
+
+        .window-control {
+            width: 16px;
+            height: 14px;
+            margin-left: 2px;
+            background-color: #c0c0c0;
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+            border-right: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .window-control:active {
+            border-top: 1px solid #000000;
+            border-left: 1px solid #000000;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .window-control img {
+            width: 10px;
+            height: 10px;
+        }
+
+        /* Menu bar styling */
+        .window-menubar {
+            height: 19px; /* More accurate to Win98 */
+            background-color: #c0c0c0;
+            display: flex;
+            align-items: center;
+            padding: 0 2px;
+            border-bottom: 1px solid #808080;
+        }
+
+        .window-menu-item {
+            padding: 2px 6px;
+            font-size: 11px;
+            margin-right: 2px;
+            cursor: pointer;
+        }
+
+        .window-menu-item:hover {
+            background-color: #000080;
+            color: white;
+        }
+
+        /* Window content and scrollbar */
+        .window-content {
+            position: absolute;
+            top: 39px; /* Account for titlebar + menubar */
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background-color: #ffffff; /* Most windows had white content area */
+            overflow: auto;
+            border: 1px inset #808080;
+        }
+
+        /* Custom scrollbar styling to match Windows 98 */
+        .window-content::-webkit-scrollbar {
+            width: 16px;
+            height: 16px;
+        }
+
+        .window-content::-webkit-scrollbar-track {
+            background-color: #c0c0c0;
+        }
+
+        .window-content::-webkit-scrollbar-thumb {
+            background-color: #c0c0c0;
+            border: 1px solid;
+            border-top-color: #000000;
+            border-left-color: #000000;
+            border-right-color: #dfdfdf;
+            border-bottom-color: #dfdfdf;
+        }
+
+        .window-content::-webkit-scrollbar-button {
+            background-color: #c0c0c0;
+            border: 1px solid;
+            border-top-color: #dfdfdf;
+            border-left-color: #dfdfdf;
+            border-right-color: #000000;
+            border-bottom-color: #000000;
+            display: block;
+            height: 16px;
+            width: 16px;
+        }
+
+        /* Resize handles */
+        .resize-handle {
+            position: absolute;
+            z-index: 10;
+        }
+
+        .resize-handle-n {
+            top: 0;
+            left: 3px;
+            right: 3px;
+            height: 3px;
+            cursor: n-resize;
+        }
+
+        .resize-handle-e {
+            top: 3px;
+            right: 0;
+            bottom: 3px;
+            width: 3px;
+            cursor: e-resize;
+        }
+
+        .resize-handle-s {
+            bottom: 0;
+            left: 3px;
+            right: 3px;
+            height: 3px;
+            cursor: s-resize;
+        }
+
+        .resize-handle-w {
+            top: 3px;
+            left: 0;
+            bottom: 3px;
+            width: 3px;
+            cursor: w-resize;
+        }
+
+        .resize-handle-ne {
+            top: 0;
+            right: 0;
+            width: 6px;
+            height: 6px;
+            cursor: ne-resize;
+        }
+
+        .resize-handle-se {
+            bottom: 0;
+            right: 0;
+            width: 6px;
+            height: 6px;
+            cursor: se-resize;
+        }
+
+        .resize-handle-sw {
+            bottom: 0;
+            left: 0;
+            width: 6px;
+            height: 6px;
+            cursor: sw-resize;
+        }
+
+        .resize-handle-nw {
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 6px;
+            cursor: nw-resize;
+        }
+
+        /* Start Menu */
+        .start-menu {
+            position: absolute;
+            bottom: 28px;
+            left: 1px;
+            width: 190px;
+            background-color: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            z-index: 1001;
+            display: none;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-menu-header {
+            height: 38px;
+            background-color: #000080;
+            background-image: linear-gradient(to right, #000080, #1084d0);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            padding-bottom: 5px;
+        }
+
+        .start-menu-items {
+            display: flex;
+        }
+
+        .start-menu-left {
+            width: 140px;
+            padding: 3px 0;
+        }
+
+        .start-menu-right {
+            width: 50px;
+            background-color: #808080;
+            border-left: 1px solid #000000;
+        }
+
+        .start-menu-item {
+            height: 24px;
+            padding: 3px 5px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .start-menu-item:hover {
+            background-color: #000080;
+            color: white;
+        }
+
+        .start-menu-item img {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+
+        .start-menu-separator {
+            height: 1px;
+            background-color: #808080;
+            margin: 2px 0;
+        }
+
+        /* Context Menu */
+        .context-menu {
+            position: absolute;
+            background-color: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            min-width: 150px;
+            z-index: 1002;
+            display: none;
+            padding: 2px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .context-menu-item {
+            height: 20px;
+            padding: 2px 8px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .context-menu-item:hover {
+            background-color: #000080;
+            color: white;
+        }
+
+        .context-menu-item img {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+
+        .context-menu-separator {
+            height: 1px;
+            background-color: #808080;
+            margin: 2px 0;
+        }
+
+        /* File Explorer */
+        .explorer-toolbar {
+            height: 24px;
+            border-bottom: 1px solid #808080;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .explorer-toolbar-button {
+            height: 18px;
+            padding: 1px 4px;
+            margin-right: 2px;
+            background-color: #c0c0c0;
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+            border-right: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .explorer-toolbar-button:active {
+            border-top: 1px solid #000000;
+            border-left: 1px solid #000000;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .explorer-address-bar {
+            height: 20px;
+            background-color: white;
+            border: 1px inset #808080;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+            margin: 5px;
+            font-size: 11px;
+        }
+
+        .explorer-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            height: calc(100% - 60px);
+            overflow: auto;
+            padding: 5px;
+            background-color: white;
+        }
+
+        .file-icon {
+            width: 75px;
+            height: 75px;
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            cursor: pointer;
+        }
+
+        .file-icon img {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 4px;
+        }
+
+        .file-icon span {
+            color: black;
+            text-align: center;
+            font-size: 11px;
+            max-width: 75px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 1px 2px;
+        }
+
+        .file-icon.selected span {
+            background-color: #000080;
+            color: white;
+        }
+
+        /* Control Panel */
+        .control-panel-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            height: 100%;
+            overflow: auto;
+            padding: 8px;
+            background-color: white;
+        }
+
+        .control-panel-icon {
+            width: 80px;
+            height: 75px;
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            cursor: pointer;
+        }
+
+        .control-panel-icon img {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 4px;
+        }
+
+        .control-panel-icon span {
+            color: black;
+            text-align: center;
+            font-size: 11px;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 1px 2px;
+        }
+
+        .control-panel-icon.selected span {
+            background-color: #000080;
+            color: white;
+        }
+
+        /* Common form controls */
+        .win98-button {
+            background-color: #c0c0c0;
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+            border-right: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+            padding: 2px 6px;
+            font-size: 11px;
+            font-family: "MS Sans Serif", Arial, sans-serif;
+            cursor: pointer;
+            min-width: 75px;
+            height: 23px;
+            margin-right: 5px;
+        }
+
+        .win98-button:active {
+            border-top: 1px solid #000000;
+            border-left: 1px solid #000000;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .win98-input {
+            background-color: white;
+            border: 2px inset #808080;
+            font-size: 11px;
+            font-family: "MS Sans Serif", Arial, sans-serif;
+            padding: 2px 4px;
+            height: 21px;
+        }
+
+        .win98-select {
+            background-color: white;
+            border: 2px inset #808080;
+            font-size: 11px;
+            font-family: "MS Sans Serif", Arial, sans-serif;
+            padding: 1px;
+            height: 21px;
+        }
+
+        /* Dialog window styles */
+        .dialog-window {
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .dialog-content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background-color: #c0c0c0;
+        }
+
+        .dialog-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="desktop" id="desktop">
+        <!-- Desktop icons will be added here by JavaScript -->
+    </div>
+
+    <div class="taskbar">
+        <div class="start-button" id="start-button">
+            <img src="icons/windows-0.png" alt="Start">
+            <span>Start</span>
+        </div>
+        <div class="taskbar-divider"></div>
+        <div class="task-buttons" id="task-buttons">
+            <!-- Active window buttons will be added here -->
+        </div>
+        <div class="system-tray">
+            <div class="system-tray-time" id="system-tray-time">12:00 PM</div>
+        </div>
+    </div>
+
+    <div class="start-menu" id="start-menu">
+        <div class="start-menu-header">
+            Windows<span style="font-size: 16px; font-weight: normal;">98</span>
+        </div>
+        <div class="start-menu-items">
+            <div class="start-menu-left">
+                <div class="start-menu-item" data-action="programs">
+                    <img src="icons/directory_program_group-0.png" alt="Programs">
+                    <span>Programs</span>
+                </div>
+                <div class="start-menu-item" data-action="documents">
+                    <img src="icons/directory_my_documents-0.png" alt="Documents">
+                    <span>Documents</span>
+                </div>
+                <div class="start-menu-item" data-action="settings">
+                    <img src="icons/directory_control_panel-0.png" alt="Settings">
+                    <span>Settings</span>
+                </div>
+                <div class="start-menu-item" data-action="find">
+                    <img src="icons/search_file-0.png" alt="Find">
+                    <span>Find</span>
+                </div>
+                <div class="start-menu-item" data-action="help">
+                    <img src="icons/help_book-0.png" alt="Help">
+                    <span>Help</span>
+                </div>
+                <div class="start-menu-item" data-action="run">
+                    <img src="icons/application_hourglass-0.png" alt="Run">
+                    <span>Run...</span>
+                </div>
+                <div class="start-menu-separator"></div>
+                <div class="start-menu-item" data-action="shutdown">
+                    <img src="icons/shut_down-0.png" alt="Shut Down">
+                    <span>Shut Down...</span>
+                </div>
+            </div>
+            <div class="start-menu-right">
+                <!-- Empty for now -->
+            </div>
+        </div>
+    </div>
+
+    <div class="context-menu" id="desktop-context-menu" style="display: none;">
+        <div class="context-menu-item" data-action="view">
+            <img src="icons/view_details-0.png" alt="View">
+            <span>View</span>
+        </div>
+        <div class="context-menu-item" data-action="arrange">
+            <img src="icons/align_centered-0.png" alt="Arrange Icons">
+            <span>Arrange Icons</span>
+        </div>
+        <div class="context-menu-item" data-action="lineUp">
+            <img src="icons/align_horizontally-0.png" alt="Line Up Icons">
+            <span>Line Up Icons</span>
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-action="paste">
+            <img src="icons/paste-0.png" alt="Paste">
+            <span>Paste</span>
+        </div>
+        <div class="context-menu-item" data-action="pasteShortcut">
+            <img src="icons/paste_shortcut-0.png" alt="Paste Shortcut">
+            <span>Paste Shortcut</span>
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-action="newFolder">
+            <img src="icons/directory_closed-0.png" alt="New Folder">
+            <span>New</span>
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-action="properties">
+            <img src="icons/properties-0.png" alt="Properties">
+            <span>Properties</span>
+        </div>
+    </div>
+
+    <script>
+        // Windows 98 Desktop Clone - Enhanced Version
+        
+        // The WinOS namespace helps prevent global scope pollution
+        const WinOS = {
+            // Configuration constants
+            config: {
+                ICON_WIDTH: 75,
+                ICON_HEIGHT: 90,
+                DESKTOP_PADDING: 10,
+                MIN_WINDOW_WIDTH: 200,
+                MIN_WINDOW_HEIGHT: 150,
+                DEFAULT_WINDOW_Z_INDEX: 100
+            },
+            
+            // State management 
+            state: {
+                openWindows: [],
+                zIndexCounter: 100,
+                activeWindow: null,
+                selectedIcon: null,
+                recycleBinFiles: [],
+                dragState: null, // For window dragging
+                resizeState: null, // For window resizing
+                contextMenuOpen: false
+            },
+            
+            // DOM elements cache
+            elements: {
+                desktop: null,
+                startButton: null,
+                startMenu: null,
+                taskButtons: null,
+                systemTrayTime: null,
+                desktopContextMenu: null
+            },
+            
+            // Event handlers
+            handlers: {},
+            
+            // Components (Windows, Menus, etc.)
+            components: {},
+            
+            // Utility functions
+            utils: {},
+            
+            // Initialize the desktop environment
+            init: function() {
+                this.cacheElements();
+                this.setupSystemTray();
+                this.createDesktopIcons();
+                this.attachGlobalEventListeners();
+                this.updateClock();
+                this.addDeletableFile();
+                
+                // Start the clock update interval
+                setInterval(() => this.updateClock(), 60000);
+            },
+            
+            // Cache frequently used DOM elements
+            cacheElements: function() {
+                this.elements.desktop = document.getElementById('desktop');
+                this.elements.startButton = document.getElementById('start-button');
+                this.elements.startMenu = document.getElementById('start-menu');
+                this.elements.taskButtons = document.getElementById('task-buttons');
+                this.elements.systemTrayTime = document.getElementById('system-tray-time');
+                this.elements.desktopContextMenu = document.getElementById('desktop-context-menu');
+            },
+            
+            // Update the system clock in the taskbar
+            updateClock: function() {
+                const now = new Date();
+                let hours = now.getHours();
+                const minutes = now.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+                this.elements.systemTrayTime.textContent = hours + ':' + minutesStr + ' ' + ampm;
+            },
+            
+            // Setup system tray icons
+            setupSystemTray: function() {
+                const systemTray = document.querySelector('.system-tray');
+                
+                // Clear existing tray (except time)
+                const timeElement = systemTray.querySelector('.system-tray-time');
+                systemTray.innerHTML = '';
+                
+                // Add volume icon
+                const volumeIcon = document.createElement('img');
+                volumeIcon.className = 'system-tray-icon';
+                volumeIcon.src = 'icons/volume-0.png';
+                volumeIcon.alt = 'Volume';
+                systemTray.appendChild(volumeIcon);
+                
+                // Add network icon
+                const networkIcon = document.createElement('img');
+                networkIcon.className = 'system-tray-icon';
+                networkIcon.src = 'icons/connected_world-0.png';
+                networkIcon.alt = 'Network';
+                systemTray.appendChild(networkIcon);
+                
+                // Re-add time
+                systemTray.appendChild(timeElement);
+            },
+            
+            // Create desktop icons
+            createDesktopIcons: function() {
+                const desktopIcons = [
+                    { name: 'My Computer', icon: 'icons/computer-3.png', action: () => this.components.windows.openMyComputer() },
+                    { name: 'Recycle Bin', icon: 'icons/recycle_bin_empty-0.png', action: () => this.components.windows.openRecycleBin() },
+                    { name: 'My Documents', icon: 'icons/directory_open_file_mydocs-0.png', action: null },
+                    { name: 'Internet Explorer', icon: 'icons/msie1-0.png', action: null },
+                    { name: 'Network Neighborhood', icon: 'icons/network_cool_two_pcs-0.png', action: null },
+                    { name: 'Control Panel', icon: 'icons/settings-0.png', action: () => this.components.windows.openControlPanel() }
+                ];
+                
+                // Add desktop icons in a grid
+                desktopIcons.forEach((iconData, index) => {
+                    const icon = document.createElement('div');
+                    icon.className = 'desktop-icon';
+                    icon.innerHTML = `
+                        <img src="${iconData.icon}" alt="${iconData.name}">
+                        <span>${iconData.name}</span>
+                    `;
+                    
+                    // Position icons vertically in a grid
+                    icon.style.left = `${this.config.DESKTOP_PADDING}px`;
+                    icon.style.top = `${this.config.DESKTOP_PADDING + index * this.config.ICON_HEIGHT}px`;
+                    
+                    // Add left click handler for the icon
+                    icon.addEventListener('click', (e) => {
+                        // Deselect previous icon
+                        if (this.state.selectedIcon) {
+                            this.state.selectedIcon.classList.remove('selected');
+                        }
+                        
+                        // Select this icon
+                        icon.classList.add('selected');
+                        this.state.selectedIcon = icon;
+                        
+                        e.stopPropagation();
+                    });
+                    
+                    // Add right-click handler for context menu
+                    icon.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        
+                        // Select this icon
+                        if (this.state.selectedIcon) {
+                            this.state.selectedIcon.classList.remove('selected');
+                        }
+                        icon.classList.add('selected');
+                        this.state.selectedIcon = icon;
+                        
+                        this.components.menus.showIconContextMenu(e.clientX, e.clientY, iconData);
+                    });
+                    
+                    // Add double-click handler to open the window
+                    icon.addEventListener('dblclick', () => {
+                        if (iconData.action) {
+                            iconData.action();
+                        }
+                    });
+                    
+                    this.elements.desktop.appendChild(icon);
+                });
+            },
+            
+            // Attach global event listeners
+            attachGlobalEventListeners: function() {
+                // Handle Start button click
+                this.elements.startButton.addEventListener('click', () => {
+                    if (this.elements.startMenu.style.display === 'block') {
+                        this.elements.startMenu.style.display = 'none';
+                    } else {
+                        this.elements.startMenu.style.display = 'block';
+                    }
+                });
+                
+                // Handle desktop click (to close menus and deselect icons)
+                this.elements.desktop.addEventListener('click', () => {
+                    this.elements.startMenu.style.display = 'none';
+                    this.elements.desktopContextMenu.style.display = 'none';
+                    
+                    // Deselect icon
+                    if (this.state.selectedIcon) {
+                        this.state.selectedIcon.classList.remove('selected');
+                        this.state.selectedIcon = null;
+                    }
+                    
+                    // Close any context menus
+                    const contextMenu = document.getElementById('icon-context-menu');
+                    if (contextMenu) {
+                        contextMenu.style.display = 'none';
+                    }
+                });
+                
+                // Handle desktop right-click
+                this.elements.desktop.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    this.components.menus.showDesktopContextMenu(e.clientX, e.clientY);
+                });
+                
+                // Handle start menu item clicks
+                document.querySelectorAll('.start-menu-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const action = item.getAttribute('data-action');
+                        if (action) {
+                            this.handlers.handleStartMenuAction(action);
+                        }
+                    });
+                });
+                
+                // Handle keyboard events
+                document.addEventListener('keydown', (e) => {
+                    // Handle Escape key to close menus
+                    if (e.key === 'Escape') {
+                        this.elements.startMenu.style.display = 'none';
+                        
+                        const contextMenu = document.getElementById('icon-context-menu');
+                        if (contextMenu) {
+                            contextMenu.style.display = 'none';
+                        }
+                        
+                        this.elements.desktopContextMenu.style.display = 'none';
+                    }
+                    
+                    // Handle Delete key to move selected items to recycle bin
+                    if (e.key === 'Delete' && this.state.selectedIcon) {
+                        const iconName = this.state.selectedIcon.querySelector('span').textContent;
+                        const iconImg = this.state.selectedIcon.querySelector('img').src;
+                        
+                        // Don't delete the recycle bin itself or standard desktop icons
+                        const standardIcons = ['My Computer', 'Recycle Bin', 'My Documents', 'Internet Explorer', 'Network Neighborhood', 'Control Panel'];
+                        if (!standardIcons.includes(iconName)) {
+                            // Add to recycle bin
+                            this.components.recycleBin.addToRecycleBin({
+                                name: iconName,
+                                icon: iconImg
+                            });
+                            
+                            // Remove from desktop
+                            this.elements.desktop.removeChild(this.state.selectedIcon);
+                            this.state.selectedIcon = null;
+                        }
+                    }
+                });
+            },
+            
+            // Add a file that can be deleted to desktop
+            addDeletableFile: function() {
+                const fileIcon = document.createElement('div');
+                fileIcon.className = 'desktop-icon';
+                fileIcon.innerHTML = `
+                    <img src="icons/notepad-5.png" alt="New Text Document">
+                    <span>New Text Document.txt</span>
+                `;
+                
+                // Position at a reasonable spot on desktop
+                fileIcon.style.left = `${this.config.DESKTOP_PADDING + this.config.ICON_WIDTH + 10}px`;
+                fileIcon.style.top = `${this.config.DESKTOP_PADDING}px`;
+                
+                // Add event handlers
+                fileIcon.addEventListener('click', (e) => {
+                    // Deselect previous icon
+                    if (this.state.selectedIcon) {
+                        this.state.selectedIcon.classList.remove('selected');
+                    }
+                    
+                    // Select this icon
+                    fileIcon.classList.add('selected');
+                    this.state.selectedIcon = fileIcon;
+                    
+                    e.stopPropagation();
+                });
+                
+                fileIcon.addEventListener('dblclick', () => {
+                    this.components.windows.createNotepadWindow();
+                });
+                
+                fileIcon.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    
+                    // Select this icon
+                    if (this.state.selectedIcon) {
+                        this.state.selectedIcon.classList.remove('selected');
+                    }
+                    fileIcon.classList.add('selected');
+                    this.state.selectedIcon = fileIcon;
+                    
+                    // Show context menu for the file
+                    this.components.menus.showIconContextMenu(e.clientX, e.clientY, {
+                        name: 'New Text Document.txt',
+                        icon: 'icons/notepad-5.png',
+                        action: () => this.components.windows.createNotepadWindow()
+                    });
+                });
+                
+                this.elements.desktop.appendChild(fileIcon);
+            },
+            
+            // Handler functions for different actions
+            handlers: {
+                // Handle Start menu actions
+                handleStartMenuAction: function(action) {
+                    WinOS.elements.startMenu.style.display = 'none';
+                    
+                    switch (action) {
+                        case 'programs':
+                            // Would normally show Programs sub-menu
+                            break;
+                        case 'documents':
+                            // Would show Documents sub-menu
+                            break;
+                        case 'settings':
+                            WinOS.components.windows.openControlPanel();
+                            break;
+                        case 'find':
+                            // Would open Find dialog
+                            break;
+                        case 'help':
+                            // Would open Help
+                            break;
+                        case 'run':
+                            WinOS.components.windows.createRunDialog();
+                            break;
+                        case 'shutdown':
+                            WinOS.components.windows.createShutdownDialog();
+                            break;
+                    }
+                }
+            },
+            
+            // Component modules
+            components: {
+                // Window management
+                windows: {
+                    // Create a new window
+                    createWindow: function(title, content, width, height, x, y, showMenuBar = true) {
+                        // Create window element
+                        const windowEl = document.createElement('div');
+                        windowEl.className = 'window';
+                        windowEl.style.width = `${width}px`;
+                        windowEl.style.height = `${height}px`;
+                        windowEl.style.left = `${x || Math.max(0, Math.random() * (window.innerWidth - width))}px`;
+                        windowEl.style.top = `${y || Math.max(0, Math.random() * (window.innerHeight - height - 40))}px`;
+                        windowEl.style.zIndex = WinOS.state.zIndexCounter++;
+                        
+                        // Create window contents
+                        let windowHTML = `
+                            <div class="window-titlebar active">
+                                <img src="icons/windows-0.png" alt="" style="width: 16px; height: 16px;">
+                                <div class="window-title">${title}</div>
+                                <div class="window-controls">
+                                    <div class="window-control window-minimize">
+                                        <img src="minimize.svg" alt="Minimize">
+                                    </div>
+                                    <div class="window-control window-maximize">
+                                        <img src="maximize.svg" alt="Maximize">
+                                    </div>
+                                    <div class="window-control window-close">
+                                        <img src="close-icon.png" alt="Close">
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Add menu bar if requested
+                        if (showMenuBar) {
+                            windowHTML += `
+                                <div class="window-menubar">
+                                    <div class="window-menu-item">File</div>
+                                    <div class="window-menu-item">Edit</div>
+                                    <div class="window-menu-item">View</div>
+                                    <div class="window-menu-item">Help</div>
+                                </div>
+                            `;
+                        }
+                        
+                        windowHTML += `<div class="window-content">${content}</div>`;
+                        
+                        // Add resize handles
+                        windowHTML += `
+                            <div class="resize-handle resize-handle-n"></div>
+                            <div class="resize-handle resize-handle-e"></div>
+                            <div class="resize-handle resize-handle-s"></div>
+                            <div class="resize-handle resize-handle-w"></div>
+                            <div class="resize-handle resize-handle-ne"></div>
+                            <div class="resize-handle resize-handle-se"></div>
+                            <div class="resize-handle resize-handle-sw"></div>
+                            <div class="resize-handle resize-handle-nw"></div>
+                        `;
+                        
+                        windowEl.innerHTML = windowHTML;
+                        
+                        // Add the window to the DOM
+                        document.body.appendChild(windowEl);
+                        
+                        // Store window data
+                        const windowData = {
+                            element: windowEl,
+                            title: title,
+                            taskButton: null,
+                            minimized: false,
+                            maximized: false,
+                            prevDimensions: { width, height, x: windowEl.offsetLeft, y: windowEl.offsetTop }
+                        };
+                        
+                        WinOS.state.openWindows.push(windowData);
+                        
+                        // Add task button
+                        const taskButton = document.createElement('div');
+                        taskButton.className = 'task-button';
+                        taskButton.innerHTML = `
+                            <img src="icons/windows-0.png" alt="" style="width: 16px; height: 16px;">
+                            <span style="font-size: 11px;">${title}</span>
+                        `;
+                        
+                        WinOS.elements.taskButtons.appendChild(taskButton);
+                        windowData.taskButton = taskButton;
+                        
+                        // Add event listeners
+                        
+                        // Make window active when clicked
+                        windowEl.addEventListener('mousedown', () => {
+                            WinOS.components.windows.activateWindow(windowData);
+                        });
+                        
+                        // Task button click handler
+                        taskButton.addEventListener('click', () => {
+                            if (windowData.minimized) {
+                                WinOS.components.windows.restoreWindow(windowData);
+                            } else if (WinOS.state.activeWindow === windowData) {
+                                WinOS.components.windows.minimizeWindow(windowData);
+                            } else {
+                                WinOS.components.windows.activateWindow(windowData);
+                            }
+                        });
+                        
+                        // Control button handlers
+                        windowEl.querySelector('.window-close').addEventListener('click', () => {
+                            WinOS.components.windows.closeWindow(windowData);
+                        });
+                        
+                        windowEl.querySelector('.window-minimize').addEventListener('click', () => {
+                            WinOS.components.windows.minimizeWindow(windowData);
+                        });
+                        
+                        windowEl.querySelector('.window-maximize').addEventListener('click', () => {
+                            if (windowData.maximized) {
+                                WinOS.components.windows.restoreWindowSize(windowData);
+                            } else {
+                                WinOS.components.windows.maximizeWindow(windowData);
+                            }
+                        });
+                        
+                        // Make window draggable
+                        WinOS.utils.makeDraggable(windowEl, windowEl.querySelector('.window-titlebar'));
+                        
+                        // Make window resizable
+                        WinOS.utils.makeResizable(windowEl);
+                        
+                        // Activate the window
+                        WinOS.components.windows.activateWindow(windowData);
+                        
+                        return windowData;
+                    },
+                    
+                    // Activate a window
+                    activateWindow: function(windowData) {
+                        // Deactivate currently active window
+                        if (WinOS.state.activeWindow) {
+                            WinOS.state.activeWindow.element.querySelector('.window-titlebar').className = 'window-titlebar';
+                            if (WinOS.state.activeWindow.taskButton) {
+                                WinOS.state.activeWindow.taskButton.classList.remove('active');
+                            }
+                        }
+                        
+                        // Set this window as active
+                        WinOS.state.activeWindow = windowData;
+                        windowData.element.style.zIndex = WinOS.state.zIndexCounter++;
+                        windowData.element.querySelector('.window-titlebar').className = 'window-titlebar active';
+                        
+                        // Update taskbar button
+                        if (windowData.taskButton) {
+                            windowData.taskButton.classList.add('active');
+                        }
+                        
+                        // If minimized, restore it
+                        if (windowData.minimized) {
+                            this.restoreWindow(windowData);
+                        }
+                    },
+                    
+                    // Minimize a window
+                    minimizeWindow: function(windowData) {
+                        windowData.element.style.display = 'none';
+                        windowData.minimized = true;
+                        
+                        // Update taskbar button
+                        if (windowData.taskButton) {
+                            windowData.taskButton.classList.remove('active');
+                        }
+                        
+                        // If this was the active window, clear active window
+                        if (WinOS.state.activeWindow === windowData) {
+                            WinOS.state.activeWindow = null;
+                        }
+                    },
+                    
+                    // Restore a minimized window
+                    restoreWindow: function(windowData) {
+                        windowData.element.style.display = 'block';
+                        windowData.minimized = false;
+                        this.activateWindow(windowData);
+                    },
+                    
+                    // Maximize a window
+                    maximizeWindow: function(windowData) {
+                        // Save current dimensions for later restore
+                        windowData.prevDimensions = {
+                            width: windowData.element.offsetWidth,
+                            height: windowData.element.offsetHeight,
+                            x: windowData.element.offsetLeft,
+                            y: windowData.element.offsetTop
+                        };
+                        
+                        // Maximize
+                        windowData.element.style.width = '100%';
+                        windowData.element.style.height = `${window.innerHeight - 28}px`;
+                        windowData.element.style.left = '0';
+                        windowData.element.style.top = '0';
+                        windowData.maximized = true;
+                        
+                        // Update maximize button to show restore
+                        const maximizeButton = windowData.element.querySelector('.window-maximize img');
+                        maximizeButton.src = 'icons/restore-0.png';
+                    },
+                    
+                    // Restore a maximized window to its previous size
+                    restoreWindowSize: function(windowData) {
+                        // Restore to previous dimensions
+                        windowData.element.style.width = `${windowData.prevDimensions.width}px`;
+                        windowData.element.style.height = `${windowData.prevDimensions.height}px`;
+                        windowData.element.style.left = `${windowData.prevDimensions.x}px`;
+                        windowData.element.style.top = `${windowData.prevDimensions.y}px`;
+                        windowData.maximized = false;
+                        
+                        // Update maximize button to show maximize
+                        const maximizeButton = windowData.element.querySelector('.window-maximize img');
+                        maximizeButton.src = 'icons/maximize-0.png';
+                    },
+                    
+                    // Close a window
+                    closeWindow: function(windowData) {
+                        // Remove from DOM
+                        document.body.removeChild(windowData.element);
+                        WinOS.elements.taskButtons.removeChild(windowData.taskButton);
+                        
+                        // Remove from array
+                        const index = WinOS.state.openWindows.indexOf(windowData);
+                        if (index > -1) {
+                            WinOS.state.openWindows.splice(index, 1);
+                        }
+                        
+                        // If this was the active window, clear active window
+                        if (WinOS.state.activeWindow === windowData) {
+                            WinOS.state.activeWindow = null;
+                        }
+                    },
+                    
+                    // Open My Computer window
+                    openMyComputer: function() {
+                        const content = `
+                            <div class="explorer-toolbar">
+                                <div class="explorer-toolbar-button">Back</div>
+                                <div class="explorer-toolbar-button">Forward</div>
+                                <div class="explorer-toolbar-button">Up</div>
+                            </div>
+                            <div class="explorer-address-bar">My Computer</div>
+                            <div class="explorer-content">
+                                <div class="file-icon" data-action="openDriveC">
+                                    <img src="icons/hard_disk_drive-2.png" alt="C:">
+                                    <span>Local Disk (C:)</span>
+                                </div>
+                                <div class="file-icon" data-action="openDriveA">
+                                    <img src="icons/floppy_drive_3_5-0.png" alt="A:">
+                                    <span>3½ Floppy (A:)</span>
+                                </div>
+                                <div class="file-icon" data-action="openDriveD">
+                                    <img src="icons/cd_drive-0.png" alt="D:">
+                                    <span>CD-ROM Drive (D:)</span>
+                                </div>
+                                <div class="file-icon" data-action="openControlPanel">
+                                    <img src="icons/directory_control_panel-3.png" alt="Control Panel">
+                                    <span>Control Panel</span>
+                                </div>
+                                <div class="file-icon" data-action="openPrinters">
+                                    <img src="icons/printer-0.png" alt="Printers">
+                                    <span>Printers</span>
+                                </div>
+                                <div class="file-icon" data-action="openDialUp">
+                                    <img src="icons/directory_dial_up_networking-3.png" alt="Dial-Up">
+                                    <span>Dial-Up Networking</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        const myComputer = this.createWindow('My Computer', content, 600, 400);
+                        
+                        // Add click handlers for drive icons
+                        myComputer.element.querySelectorAll('.file-icon').forEach(icon => {
+                            icon.addEventListener('click', () => {
+                                // Deselect all icons
+                                myComputer.element.querySelectorAll('.file-icon').forEach(i => {
+                                    i.classList.remove('selected');
+                                });
+                                
+                                // Select this icon
+                                icon.classList.add('selected');
+                            });
+                            
+                            icon.addEventListener('dblclick', () => {
+                                const action = icon.getAttribute('data-action');
+                                
+                                if (action === 'openDriveC') {
+                                    this.openDriveC();
+                                } else if (action === 'openDriveA') {
+                                    this.openDriveA();
+                                } else if (action === 'openDriveD') {
+                                    this.openDriveD();
+                                } else if (action === 'openControlPanel') {
+                                    this.openControlPanel();
+                                }
+                            });
+                        });
+                    },
+                    
+                    // Open Drive C: window
+                    openDriveC: function() {
+                        const content = `
+                            <div class="explorer-toolbar">
+                                <div class="explorer-toolbar-button">Back</div>
+                                <div class="explorer-toolbar-button">Forward</div>
+                                <div class="explorer-toolbar-button">Up</div>
+                            </div>
+                            <div class="explorer-address-bar">C:\\</div>
+                            <div class="explorer-content">
+                                <div class="file-icon">
+                                    <img src="icons/directory_program_group-0.png" alt="Program Files">
+                                    <span>Program Files</span>
+                                </div>
+                                <div class="file-icon">
+                                    <img src="icons/directory_open-0.png" alt="Windows">
+                                    <span>Windows</span>
+                                </div>
+                                <div class="file-icon">
+                                    <img src="icons/directory_open_file_mydocs-0.png" alt="My Documents">
+                                    <span>My Documents</span>
+                                </div>
+                                <div class="file-icon">
+                                    <img src="icons/file_text-0.png" alt="autoexec.bat">
+                                    <span>autoexec.bat</span>
+                                </div>
+                                <div class="file-icon">
+                                    <img src="icons/file_text-0.png" alt="config.sys">
+                                    <span>config.sys</span>
+                                </div>
+                                <div class="file-icon">
+                                    <img src="icons/file_text-0.png" alt="msdos.sys">
+                                    <span>msdos.sys</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        this.createWindow('Local Disk (C:)', content, 600, 400);
+                    },
+                    
+                    // Open Drive A: window
+                    openDriveA: function() {
+                        const content = `
+                            <div class="explorer-toolbar">
+                                <div class="explorer-toolbar-button">Back</div>
+                                <div class="explorer-toolbar-button">Forward</div>
+                                <div class="explorer-toolbar-button">Up</div>
+                            </div>
+                            <div class="explorer-address-bar">A:\\</div>
+                            <div class="explorer-content" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                                <div style="text-align: center;">
+                                    <img src="icons/error-0.png" alt="Error" style="width: 32px; height: 32px; margin-bottom: 10px;">
+                                    <p>Please insert a disk in drive A:</p>
+                                </div>
+                            </div>
+                        `;
+                        
+                        this.createWindow('3½ Floppy (A:)', content, 500, 300);
+                    },
+                    
+                    // Open Drive D: window
+                    openDriveD: function() {
+                        const content = `
+                            <div class="explorer-toolbar">
+                                <div class="explorer-toolbar-button">Back</div>
+                                <div class="explorer-toolbar-button">Forward</div>
+                                <div class="explorer-toolbar-button">Up</div>
+                            </div>
+                            <div class="explorer-address-bar">D:\\</div>
+                            <div class="explorer-content">
+                                <div class="file-icon">
+                                    <img src="icons/directory_closed-0.png" alt="Install">
+                                    <span>Install</span>
+                                </div>
+                                <div class="file-icon">
+                                    <img src="icons/directory_closed-0.png" alt="Drivers">
+                                    <span>Drivers</span>
+                                </div>
+                                <div class="file-icon">
+                                    <img src="icons/application_executable-0.png" alt="Setup.exe">
+                                    <span>Setup.exe</span>
+                                </div>
+                                <div class="file-icon">
+                                    <img src="icons/file_text-0.png" alt="Readme.txt">
+                                    <span>Readme.txt</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        this.createWindow('CD-ROM Drive (D:)', content, 600, 400);
+                    },
+                    
+                    // Open Control Panel window
+                    openControlPanel: function() {
+                        const content = `
+                            <div class="control-panel-content">
+                                <div class="control-panel-icon">
+                                    <img src="icons/accessibility-0.png" alt="Accessibility Options">
+                                    <span>Accessibility Options</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/display_properties-1.png" alt="Display">
+                                    <span>Display</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/keyboard_mouse-0.png" alt="Keyboard">
+                                    <span>Keyboard</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/mouse-2.png" alt="Mouse">
+                                    <span>Mouse</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/network_neighborhood-0.png" alt="Network">
+                                    <span>Network</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/printer-0.png" alt="Printers">
+                                    <span>Printers</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/sound-0.png" alt="Sounds">
+                                    <span>Sounds</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/date_time-0.png" alt="Date/Time">
+                                    <span>Date/Time</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/add_new_hardware-0.png" alt="Add New Hardware">
+                                    <span>Add New Hardware</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/install_program-0.png" alt="Add/Remove Programs">
+                                    <span>Add/Remove Programs</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/fonts-0.png" alt="Fonts">
+                                    <span>Fonts</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/earth-0.png" alt="Regional Settings">
+                                    <span>Regional Settings</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/password-0.png" alt="Passwords">
+                                    <span>Passwords</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/dial_up_networking-0.png" alt="Internet Options">
+                                    <span>Internet Options</span>
+                                </div>
+                                <div class="control-panel-icon">
+                                    <img src="icons/computer_padlock-0.png" alt="System">
+                                    <span>System</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        this.createWindow('Control Panel', content, 650, 480);
+                    },
+                    
+                    // Open Recycle Bin window
+                    openRecycleBin: function() {
+                        let content = `
+                            <div class="explorer-toolbar">
+                                <div class="explorer-toolbar-button">Back</div>
+                                <div class="explorer-toolbar-button">Forward</div>
+                                <div class="explorer-toolbar-button">Up</div>
+                            </div>
+                            <div class="explorer-address-bar">Recycle Bin</div>
+                            <div class="explorer-content" id="recycle-bin-content">
+                        `;
+                        
+                        // Add deleted files if any
+                        if (WinOS.state.recycleBinFiles.length > 0) {
+                            WinOS.state.recycleBinFiles.forEach(file => {
+                                content += `
+                                    <div class="file-icon" data-filename="${file.name}">
+                                        <img src="${file.icon}" alt="${file.name}">
+                                        <span>${file.name}</span>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            content += `
+                                <div style="display: flex; justify-content: center; align-items: center; height: 100%; width: 100%;">
+                                    <p>The Recycle Bin is empty</p>
+                                </div>
+                            `;
+                        }
+                        
+                        content += `</div>`;
+                        
+                        this.createWindow('Recycle Bin', content, 600, 400);
+                    },
+                    
+                    // Create a Notepad window
+                    createNotepadWindow: function() {
+                        const content = `
+                            <textarea style="width: 100%; height: 100%; resize: none; border: 1px inset #808080; font-family: 'Lucida Console', monospace; font-size: 12px; padding: 2px;"></textarea>
+                        `;
+                        
+                        this.createWindow('Untitled - Notepad', content, 400, 300);
+                    },
+                    
+                    // Create Run dialog
+                    createRunDialog: function() {
+                        const content = `
+                            <div class="dialog-content">
+                                <div style="margin-bottom: 15px; display: flex; align-items: center;">
+                                    <img src="icons/application_hourglass-0.png" alt="Run" style="width: 32px; height: 32px; margin-right: 10px;">
+                                    <span>Type the name of a program, folder, document, or Internet resource, and Windows will open it for you.</span>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <label for="run-input" style="display: block; margin-bottom: 5px;">Open:</label>
+                                    <div style="display: flex;">
+                                        <input type="text" id="run-input" class="win98-input" style="flex: 1;">
+                                        <button class="win98-button" style="width: 24px; height: 24px; min-width: auto; margin-left: 5px; display: flex; align-items: center; justify-content: center;">
+                                            <span style="font-size: 14px;">...</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="dialog-footer">
+                                    <button class="win98-button">OK</button>
+                                    <button class="win98-button">Cancel</button>
+                                    <button class="win98-button">Browse...</button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        this.createWindow('Run', content, 400, 200, null, null, false);
+                    },
+                    
+                    // Create Shutdown dialog
+                    createShutdownDialog: function() {
+                        const content = `
+                            <div class="dialog-content">
+                                <div style="margin-bottom: 15px; display: flex; align-items: center;">
+                                    <img src="icons/shut_down-0.png" alt="Shutdown" style="width: 32px; height: 32px; margin-right: 10px;">
+                                    <span>What do you want the computer to do?</span>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <select class="win98-select" style="width: 100%;">
+                                        <option>Shut down</option>
+                                        <option>Restart</option>
+                                        <option>Restart in MS-DOS mode</option>
+                                        <option>Stand by</option>
+                                    </select>
+                                </div>
+                                <div class="dialog-footer">
+                                    <button class="win98-button">OK</button>
+                                    <button class="win98-button">Cancel</button>
+                                    <button class="win98-button">Help</button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        this.createWindow('Shut Down Windows', content, 350, 180, null, null, false);
+                    }
+                },
+                
+                // Menu system
+                menus: {
+                    // Show desktop context menu
+                    showDesktopContextMenu: function(x, y) {
+                        WinOS.elements.desktopContextMenu.style.display = 'block';
+                        WinOS.elements.desktopContextMenu.style.left = `${x}px`;
+                        WinOS.elements.desktopContextMenu.style.top = `${y}px`;
+                        
+                        // Ensure the menu doesn't go off screen
+                        const menuRect = WinOS.elements.desktopContextMenu.getBoundingClientRect();
+                        if (menuRect.right > window.innerWidth) {
+                            WinOS.elements.desktopContextMenu.style.left = `${window.innerWidth - menuRect.width}px`;
+                        }
+                        if (menuRect.bottom > window.innerHeight) {
+                            WinOS.elements.desktopContextMenu.style.top = `${window.innerHeight - menuRect.height}px`;
+                        }
+                        
+                        WinOS.state.contextMenuOpen = true;
+                        
+                        // Add click event to close the menu when clicking elsewhere
+                        setTimeout(() => {
+                            const closeContextMenu = function (e) {
+                                if (!WinOS.elements.desktopContextMenu.contains(e.target)) {
+                                    WinOS.elements.desktopContextMenu.style.display = 'none';
+                                    WinOS.state.contextMenuOpen = false;
+                                    document.removeEventListener('click', closeContextMenu);
+                                }
+                            };
+                            document.addEventListener('click', closeContextMenu);
+                        }, 0);
+                    },
+                    
+                    // Show icon context menu
+                    showIconContextMenu: function(x, y, iconData) {
+                        // Remove existing context menu if any
+                        const existingMenu = document.getElementById('icon-context-menu');
+                        if (existingMenu) {
+                            document.body.removeChild(existingMenu);
+                        }
+                        
+                        // Create new context menu
+                        const contextMenu = document.createElement('div');
+                        contextMenu.id = 'icon-context-menu';
+                        contextMenu.className = 'context-menu';
+                        
+                        // Add menu items based on the icon
+                        if (iconData.name === 'Recycle Bin') {
+                            contextMenu.innerHTML = `
+                                <div class="context-menu-item" data-action="open">
+                                    <img src="icons/directory_open-0.png" alt="Open">
+                                    <span>Open</span>
+                                </div>
+                                <div class="context-menu-separator"></div>
+                                <div class="context-menu-item" data-action="empty">
+                                    <img src="icons/recycle_bin_empty-0.png" alt="Empty">
+                                    <span>Empty Recycle Bin</span>
+                                </div>
+                                <div class="context-menu-separator"></div>
+                                <div class="context-menu-item" data-action="rename">
+                                    <img src="icons/textfield_rename-0.png" alt="Rename">
+                                    <span>Rename</span>
+                                </div>
+                                <div class="context-menu-separator"></div>
+                                <div class="context-menu-item" data-action="properties">
+                                    <img src="icons/properties-0.png" alt="Properties">
+                                    <span>Properties</span>
+                                </div>
+                            `;
+                        } else {
+                            contextMenu.innerHTML = `
+                                <div class="context-menu-item" data-action="open">
+                                    <img src="icons/directory_open-0.png" alt="Open">
+                                    <span>Open</span>
+                                </div>
+                                <div class="context-menu-separator"></div>
+                                <div class="context-menu-item" data-action="cut">
+                                    <img src="icons/cut-0.png" alt="Cut">
+                                    <span>Cut</span>
+                                </div>
+                                <div class="context-menu-item" data-action="copy">
+                                    <img src="icons/copy-0.png" alt="Copy">
+                                    <span>Copy</span>
+                                </div>
+                                <div class="context-menu-separator"></div>
+                                <div class="context-menu-item" data-action="delete">
+                                    <img src="icons/delete_file-0.png" alt="Delete">
+                                    <span>Delete</span>
+                                </div>
+                                <div class="context-menu-separator"></div>
+                                <div class="context-menu-item" data-action="rename">
+                                    <img src="icons/textfield_rename-0.png" alt="Rename">
+                                    <span>Rename</span>
+                                </div>
+                                <div class="context-menu-item" data-action="properties">
+                                    <img src="icons/properties-0.png" alt="Properties">
+                                    <span>Properties</span>
+                                </div>
+                            `;
+                        }
+                        
+                        // Add event listeners to menu items
+                        contextMenu.querySelectorAll('.context-menu-item').forEach(item => {
+                            item.addEventListener('click', function () {
+                                const action = item.getAttribute('data-action');
+                                
+                                if (action === 'open' && iconData.action) {
+                                    iconData.action();
+                                } else if (action === 'empty' && iconData.name === 'Recycle Bin') {
+                                    WinOS.components.recycleBin.emptyRecycleBin();
+                                } else if (action === 'delete') {
+                                    // Add to recycle bin
+                                    WinOS.components.recycleBin.addToRecycleBin({
+                                        name: iconData.name,
+                                        icon: iconData.icon
+                                    });
+                                    
+                                    // Remove from desktop if it's not a standard icon
+                                    const standardIcons = ['My Computer', 'Recycle Bin', 'My Documents', 'Internet Explorer', 'Network Neighborhood', 'Control Panel'];
+                                    if (!standardIcons.includes(iconData.name)) {
+                                        WinOS.elements.desktop.removeChild(WinOS.state.selectedIcon);
+                                        WinOS.state.selectedIcon = null;
+                                    }
+                                }
+                                
+                                contextMenu.style.display = 'none';
+                                WinOS.state.contextMenuOpen = false;
+                            });
+                        });
+                        
+                        // Position and show the menu
+                        document.body.appendChild(contextMenu);
+                        contextMenu.style.display = 'block';
+                        contextMenu.style.left = `${x}px`;
+                        contextMenu.style.top = `${y}px`;
+                        
+                        // Ensure the menu doesn't go off screen
+                        const menuRect = contextMenu.getBoundingClientRect();
+                        if (menuRect.right > window.innerWidth) {
+                            contextMenu.style.left = `${window.innerWidth - menuRect.width}px`;
+                        }
+                        if (menuRect.bottom > window.innerHeight) {
+                            contextMenu.style.top = `${window.innerHeight - menuRect.height}px`;
+                        }
+                        
+                        WinOS.state.contextMenuOpen = true;
+                        
+                        // Add click event to close the menu when clicking elsewhere
+                        setTimeout(() => {
+                            const closeContextMenu = function (e) {
+                                if (!contextMenu.contains(e.target)) {
+                                    contextMenu.style.display = 'none';
+                                    WinOS.state.contextMenuOpen = false;
+                                    document.removeEventListener('click', closeContextMenu);
+                                }
+                            };
+                            document.addEventListener('click', closeContextMenu);
+                        }, 0);
+                    }
+                },
+                
+                // Recycle Bin
+                recycleBin: {
+                    // Empty the recycle bin
+                    emptyRecycleBin: function() {
+                        WinOS.state.recycleBinFiles.length = 0;
+                        
+                        // Update the Recycle Bin icon
+                        const binIcon = document.querySelector('.desktop-icon img[alt="Recycle Bin"]');
+                        if (binIcon) {
+                            binIcon.src = 'icons/recycle_bin_empty-0.png';
+                        }
+                        
+                        // Update the Recycle Bin window if open
+                        const binWindow = WinOS.state.openWindows.find(w => w.title === 'Recycle Bin');
+                        if (binWindow) {
+                            const content = binWindow.element.querySelector('#recycle-bin-content');
+                            if (content) {
+                                content.innerHTML = `
+                                    <div style="display: flex; justify-content: center; align-items: center; height: 100%; width: 100%;">
+                                        <p>The Recycle Bin is empty</p>
+                                    </div>
+                                `;
+                            }
+                        }
+                    },
+                    
+                    // Add files to Recycle Bin
+                    addToRecycleBin: function(file) {
+                        WinOS.state.recycleBinFiles.push(file);
+                        
+                        // Update the Recycle Bin icon
+                        const binIcon = document.querySelector('.desktop-icon img[alt="Recycle Bin"]');
+                        if (binIcon) {
+                            binIcon.src = 'icons/recycle_bin_full-0.png';
+                        }
+                        
+                        // Update the Recycle Bin window if open
+                        const binWindow = WinOS.state.openWindows.find(w => w.title === 'Recycle Bin');
+                        if (binWindow) {
+                            const content = binWindow.element.querySelector('#recycle-bin-content');
+                            if (content) {
+                                // If the recycle bin was empty, clear the "empty" message
+                                if (WinOS.state.recycleBinFiles.length === 1) {
+                                    content.innerHTML = '';
+                                }
+                                
+                                const fileEl = document.createElement('div');
+                                fileEl.className = 'file-icon';
+                                fileEl.setAttribute('data-filename', file.name);
+                                fileEl.innerHTML = `
+                                    <img src="${file.icon}" alt="${file.name}">
+                                    <span>${file.name}</span>
+                                `;
+                                
+                                // Add click handler for selection
+                                fileEl.addEventListener('click', () => {
+                                    // Deselect all other icons
+                                    content.querySelectorAll('.file-icon').forEach(icon => {
+                                        icon.classList.remove('selected');
+                                    });
+                                    
+                                    // Select this icon
+                                    fileEl.classList.add('selected');
+                                });
+                                
+                                content.appendChild(fileEl);
+                            }
+                        }
+                    }
+                }
+            },
+            
+            // Utility functions
+            utils: {
+                // Make an element draggable
+                makeDraggable: function(element, handle) {
+                    handle.addEventListener('mousedown', function(e) {
+                        // Ensure we're not right-clicking
+                        if (e.button !== 0) return;
+                        
+                        e.preventDefault();
+                        
+                        // Initial mouse position
+                        const startX = e.clientX;
+                        const startY = e.clientY;
+                        
+                        // Element's initial position
+                        const elementRect = element.getBoundingClientRect();
+                        const startLeft = elementRect.left;
+                        const startTop = elementRect.top;
+                        
+                        // Set up drag state
+                        WinOS.state.dragState = {
+                            element: element,
+                            startX: startX,
+                            startY: startY,
+                            startLeft: startLeft,
+                            startTop: startTop
+                        };
+                        
+                        // Activate the window if not already active
+                        const windowData = WinOS.state.openWindows.find(w => w.element === element);
+                        if (windowData) {
+                            WinOS.components.windows.activateWindow(windowData);
+                        }
+                        
+                        document.addEventListener('mousemove', dragMove);
+                        document.addEventListener('mouseup', dragEnd);
+                        
+                        function dragMove(e) {
+                            if (!WinOS.state.dragState) return;
+                            
+                            e.preventDefault();
+                            
+                            // Calculate new position
+                            const deltaX = e.clientX - WinOS.state.dragState.startX;
+                            const deltaY = e.clientY - WinOS.state.dragState.startY;
+                            
+                            // Set new position
+                            element.style.left = `${WinOS.state.dragState.startLeft + deltaX}px`;
+                            element.style.top = `${WinOS.state.dragState.startTop + deltaY}px`;
+                        }
+                        
+                        function dragEnd() {
+                            WinOS.state.dragState = null;
+                            document.removeEventListener('mousemove', dragMove);
+                            document.removeEventListener('mouseup', dragEnd);
+                        }
+                    });
+                },
+                
+                // Make an element resizable
+                makeResizable: function(element) {
+                    const handles = element.querySelectorAll('.resize-handle');
+                    
+                    handles.forEach(handle => {
+                        handle.addEventListener('mousedown', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // Get window data
+                            const windowData = WinOS.state.openWindows.find(w => w.element === element);
+                            if (!windowData) return;
+                            
+                            // Don't allow resizing if maximized
+                            if (windowData.maximized) return;
+                            
+                            // Activate the window
+                            WinOS.components.windows.activateWindow(windowData);
+                            
+                            // Get initial mouse position
+                            const startX = e.clientX;
+                            const startY = e.clientY;
+                            
+                            // Get initial element dimensions and position
+                            const rect = element.getBoundingClientRect();
+                            
+                            // Determine resize direction from the handle's class
+                            const direction = handle.className.split(' ')[1].split('-')[2];
+                            
+                            // Set up resize state
+                            WinOS.state.resizeState = {
+                                element: element,
+                                startX: startX,
+                                startY: startY,
+                                startWidth: rect.width,
+                                startHeight: rect.height,
+                                startLeft: rect.left,
+                                startTop: rect.top,
+                                direction: direction
+                            };
+                            
+                            document.addEventListener('mousemove', resizeMove);
+                            document.addEventListener('mouseup', resizeEnd);
+                            
+                            function resizeMove(e) {
+                                if (!WinOS.state.resizeState) return;
+                                
+                                e.preventDefault();
+                                
+                                // Calculate deltas
+                                const deltaX = e.clientX - WinOS.state.resizeState.startX;
+                                const deltaY = e.clientY - WinOS.state.resizeState.startY;
+                                
+                                // Variables for new dimensions
+                                let newWidth = WinOS.state.resizeState.startWidth;
+                                let newHeight = WinOS.state.resizeState.startHeight;
+                                let newLeft = WinOS.state.resizeState.startLeft;
+                                let newTop = WinOS.state.resizeState.startTop;
+                                
+                                // Adjust dimensions based on resize direction
+                                switch (direction) {
+                                    case 'n':
+                                        newHeight = Math.max(WinOS.state.resizeState.startHeight - deltaY, WinOS.config.MIN_WINDOW_HEIGHT);
+                                        newTop = WinOS.state.resizeState.startTop + (WinOS.state.resizeState.startHeight - newHeight);
+                                        break;
+                                    case 's':
+                                        newHeight = Math.max(WinOS.state.resizeState.startHeight + deltaY, WinOS.config.MIN_WINDOW_HEIGHT);
+                                        break;
+                                    case 'e':
+                                        newWidth = Math.max(WinOS.state.resizeState.startWidth + deltaX, WinOS.config.MIN_WINDOW_WIDTH);
+                                        break;
+                                    case 'w':
+                                        newWidth = Math.max(WinOS.state.resizeState.startWidth - deltaX, WinOS.config.MIN_WINDOW_WIDTH);
+                                        newLeft = WinOS.state.resizeState.startLeft + (WinOS.state.resizeState.startWidth - newWidth);
+                                        break;
+                                    case 'ne':
+                                        newWidth = Math.max(WinOS.state.resizeState.startWidth + deltaX, WinOS.config.MIN_WINDOW_WIDTH);
+                                        newHeight = Math.max(WinOS.state.resizeState.startHeight - deltaY, WinOS.config.MIN_WINDOW_HEIGHT);
+                                        newTop = WinOS.state.resizeState.startTop + (WinOS.state.resizeState.startHeight - newHeight);
+                                        break;
+                                    case 'nw':
+                                        newWidth = Math.max(WinOS.state.resizeState.startWidth - deltaX, WinOS.config.MIN_WINDOW_WIDTH);
+                                        newHeight = Math.max(WinOS.state.resizeState.startHeight - deltaY, WinOS.config.MIN_WINDOW_HEIGHT);
+                                        newLeft = WinOS.state.resizeState.startLeft + (WinOS.state.resizeState.startWidth - newWidth);
+                                        newTop = WinOS.state.resizeState.startTop + (WinOS.state.resizeState.startHeight - newHeight);
+                                        break;
+                                    case 'se':
+                                        newWidth = Math.max(WinOS.state.resizeState.startWidth + deltaX, WinOS.config.MIN_WINDOW_WIDTH);
+                                        newHeight = Math.max(WinOS.state.resizeState.startHeight + deltaY, WinOS.config.MIN_WINDOW_HEIGHT);
+                                        break;
+                                    case 'sw':
+                                        newWidth = Math.max(WinOS.state.resizeState.startWidth - deltaX, WinOS.config.MIN_WINDOW_WIDTH);
+                                        newHeight = Math.max(WinOS.state.resizeState.startHeight + deltaY, WinOS.config.MIN_WINDOW_HEIGHT);
+                                        newLeft = WinOS.state.resizeState.startLeft + (WinOS.state.resizeState.startWidth - newWidth);
+                                        break;
+                                }
+                                
+                                // Apply new dimensions
+                                element.style.width = `${newWidth}px`;
+                                element.style.height = `${newHeight}px`;
+                                element.style.left = `${newLeft}px`;
+                                element.style.top = `${newTop}px`;
+                            }
+                            
+                            function resizeEnd() {
+                                WinOS.state.resizeState = null;
+                                document.removeEventListener('mousemove', resizeMove);
+                                document.removeEventListener('mouseup', resizeEnd);
+                            }
+                        });
+                    });
+                },
+                
+                // Create a new desktop shortcut
+                createShortcut: function(name, icon, action) {
+                    const shortcutIcon = document.createElement('div');
+                    shortcutIcon.className = 'desktop-icon';
+                    shortcutIcon.innerHTML = `
+                        <img src="${icon}" alt="${name}">
+                        <span>${name}</span>
+                    `;
+                    
+                    // Find a suitable position
+                    let iconIndex = WinOS.elements.desktop.querySelectorAll('.desktop-icon').length;
+                    shortcutIcon.style.left = `${WinOS.config.DESKTOP_PADDING}px`;
+                    shortcutIcon.style.top = `${WinOS.config.DESKTOP_PADDING + iconIndex * WinOS.config.ICON_HEIGHT}px`;
+                    
+                    // Add event handlers
+                    shortcutIcon.addEventListener('click', (e) => {
+                        // Deselect previous icon
+                        if (WinOS.state.selectedIcon) {
+                            WinOS.state.selectedIcon.classList.remove('selected');
+                        }
+                        
+                        // Select this icon
+                        shortcutIcon.classList.add('selected');
+                        WinOS.state.selectedIcon = shortcutIcon;
+                        
+                        e.stopPropagation();
+                    });
+                    
+                    shortcutIcon.addEventListener('dblclick', () => {
+                        if (action) action();
+                    });
+                    
+                    shortcutIcon.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        
+                        // Select this icon
+                        if (WinOS.state.selectedIcon) {
+                            WinOS.state.selectedIcon.classList.remove('selected');
+                        }
+                        shortcutIcon.classList.add('selected');
+                        WinOS.state.selectedIcon = shortcutIcon;
+                        
+                        // Show context menu
+                        WinOS.components.menus.showIconContextMenu(e.clientX, e.clientY, {
+                            name: name,
+                            icon: icon,
+                            action: action
+                        });
+                    });
+                    
+                    WinOS.elements.desktop.appendChild(shortcutIcon);
+                    return shortcutIcon;
+                }
+            }
+        };
+        
+        // Initialize the Windows 98 desktop environment
+        document.addEventListener('DOMContentLoaded', function() {
+            WinOS.init();
+        });
+    </script>
+</body>
+</html>
