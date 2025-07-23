@@ -127,6 +127,23 @@ const Desktop = {
                 WinOS.components.menus.hideContextMenus();
             }
         });
+
+        // Right-click on desktop background shows desktop context menu.
+        this.desktopEl.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+
+            // Only show context menu if not clicking on an icon
+            if (e.target === this.desktopEl) {
+                if (State.selectedIcon) {
+                    State.selectedIcon.classList.remove('selected');
+                    State.selectedIcon = null;
+                }
+
+                if (WinOS && WinOS.components.menus) {
+                    WinOS.components.menus.showDesktopContextMenu(e.clientX, e.clientY);
+                }
+            }
+        });
     }
 };
 

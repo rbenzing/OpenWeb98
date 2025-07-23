@@ -328,6 +328,18 @@ const Windows = {
                 }
             });
 
+            // Handle right-click on empty space
+            explorerContent.addEventListener('contextmenu', function(e) {
+                if (e.target === explorerContent) {
+                    e.preventDefault();
+                    fileIcons.forEach(icon => icon.classList.remove('selected'));
+
+                    if (WinOS && WinOS.components.menus) {
+                        WinOS.components.menus.showExplorerContextMenu(e.clientX, e.clientY, 'my-computer');
+                    }
+                }
+            });
+
             fileIcons.forEach(icon => {
                 icon.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -367,8 +379,18 @@ const Windows = {
                         this.classList.add('selected');
                     }
 
-                    // Show context menu (placeholder for now)
-                    console.log('Right-clicked on:', this.querySelector('span').textContent);
+                    const fileName = this.querySelector('span').textContent;
+                    const action = this.getAttribute('data-action');
+
+                    // Determine file type based on action
+                    let fileType = 'folder';
+                    if (action && (action.includes('Drive') || fileName.includes(':'))) {
+                        fileType = 'drive';
+                    }
+
+                    if (WinOS && WinOS.components.menus) {
+                        WinOS.components.menus.showFileContextMenu(e.clientX, e.clientY, fileName, fileType, 'my-computer');
+                    }
                 });
             });
         }, 0);
@@ -963,6 +985,18 @@ const Windows = {
                 }
             });
 
+            // Handle right-click on empty space
+            explorerContent.addEventListener('contextmenu', function(e) {
+                if (e.target === explorerContent) {
+                    e.preventDefault();
+                    fileIcons.forEach(icon => icon.classList.remove('selected'));
+
+                    if (WinOS && WinOS.components.menus) {
+                        WinOS.components.menus.showExplorerContextMenu(e.clientX, e.clientY, 'recycle-bin');
+                    }
+                }
+            });
+
             fileIcons.forEach(icon => {
                 icon.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -992,7 +1026,11 @@ const Windows = {
                         this.classList.add('selected');
                     }
 
-                    console.log('Right-clicked on recycled file:', this.getAttribute('data-filename'));
+                    const fileName = this.getAttribute('data-filename');
+
+                    if (WinOS && WinOS.components.menus) {
+                        WinOS.components.menus.showFileContextMenu(e.clientX, e.clientY, fileName, 'file', 'recycle-bin');
+                    }
                 });
             });
         }, 0);
@@ -1139,6 +1177,18 @@ const Windows = {
                 }
             });
 
+            // Handle right-click on empty space
+            explorerContent.addEventListener('contextmenu', function(e) {
+                if (e.target === explorerContent) {
+                    e.preventDefault();
+                    fileIcons.forEach(icon => icon.classList.remove('selected'));
+
+                    if (WinOS && WinOS.components.menus) {
+                        WinOS.components.menus.showExplorerContextMenu(e.clientX, e.clientY, 'my-documents');
+                    }
+                }
+            });
+
             fileIcons.forEach(icon => {
                 icon.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -1174,7 +1224,13 @@ const Windows = {
                         this.classList.add('selected');
                     }
 
-                    console.log('Right-clicked on:', this.querySelector('span').textContent);
+                    const fileName = this.querySelector('span').textContent;
+                    const action = this.getAttribute('data-action');
+                    const fileType = action === 'openFolder' ? 'folder' : 'file';
+
+                    if (WinOS && WinOS.components.menus) {
+                        WinOS.components.menus.showFileContextMenu(e.clientX, e.clientY, fileName, fileType, 'my-documents');
+                    }
                 });
             });
         }, 0);

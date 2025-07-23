@@ -61,6 +61,11 @@ WinOS.init = function() {
         WinOS.components.taskbar.init();
     }
 
+    // Initialize the Menus module
+    if (WinOS.components.menus && typeof WinOS.components.menus.init === 'function') {
+        WinOS.components.menus.init();
+    }
+
     // Initialize the Welcome Dialog
     WinOS.welcomeDialog.init();
 
