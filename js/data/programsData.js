@@ -18,6 +18,12 @@ const ProgramsData = {
                     action: 'openCalculator'
                 },
                 {
+                    name: 'Imaging',
+                    icon: 'icons/kodak_imaging-0.png',
+                    type: 'app',
+                    action: 'openImaging'
+                },
+                {
                     name: 'Notepad',
                     icon: 'icons/notepad-0.png',
                     type: 'app',
@@ -34,58 +40,6 @@ const ProgramsData = {
                     icon: 'icons/wordpad-0.png',
                     type: 'app',
                     action: 'openWordPad'
-                },
-                {
-                    name: 'Imaging',
-                    icon: 'icons/kodak_imaging-0.png',
-                    type: 'app',
-                    action: 'openImaging'
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    name: 'System Tools',
-                    icon: 'icons/directory_program_group-0.png',
-                    type: 'folder',
-                    items: [
-                        {
-                            name: 'Disk Defragmenter',
-                            icon: 'icons/defrag-0.png',
-                            type: 'app',
-                            action: 'openDiskDefrag'
-                        },
-                        {
-                            name: 'ScanDisk',
-                            icon: 'icons/scandisk-0.png',
-                            type: 'app',
-                            action: 'openScanDisk'
-                        },
-                        {
-                            name: 'System Information',
-                            icon: 'icons/info_bubble-0.png',
-                            type: 'app',
-                            action: 'openSystemInfo'
-                        },
-                        {
-                            name: 'Scheduled Tasks',
-                            icon: 'icons/scheduled_tasks-0.png',
-                            type: 'app',
-                            action: 'openScheduledTasks'
-                        },
-                        {
-                            name: 'System Monitor',
-                            icon: 'icons/monitor_window-0.png',
-                            type: 'app',
-                            action: 'openSystemMonitor'
-                        },
-                        {
-                            name: 'Drive Converter (FAT32)',
-                            icon: 'icons/drive-0.png',
-                            type: 'app',
-                            action: 'openDriveConverter'
-                        }
-                    ]
                 },
                 {
                     type: 'separator'
@@ -139,37 +93,80 @@ const ProgramsData = {
                             action: 'openMediaPlayer'
                         }
                     ]
-                }
-            ]
-        },
-        {
-            name: 'Games',
-            icon: 'icons/game_controller-0.png',
-            type: 'folder',
-            items: [
-                {
-                    name: 'FreeCell',
-                    icon: 'icons/freecell-0.png',
-                    type: 'app',
-                    action: 'openFreeCell'
                 },
                 {
-                    name: 'Hearts',
-                    icon: 'icons/hearts-0.png',
-                    type: 'app',
-                    action: 'openHearts'
+                    name: 'Games',
+                    icon: 'icons/game_controller-0.png',
+                    type: 'folder',
+                    items: [
+                        {
+                            name: 'FreeCell',
+                            icon: 'icons/freecell-0.png',
+                            type: 'app',
+                            action: 'openFreeCell'
+                        },
+                        {
+                            name: 'Hearts',
+                            icon: 'icons/hearts-0.png',
+                            type: 'app',
+                            action: 'openHearts'
+                        },
+                        {
+                            name: 'Minesweeper',
+                            icon: 'icons/mine-0.png',
+                            type: 'app',
+                            action: 'openMinesweeper'
+                        },
+                        {
+                            name: 'Solitaire',
+                            icon: 'icons/cards-0.png',
+                            type: 'app',
+                            action: 'openSolitaire'
+                        }
+                    ]
                 },
                 {
-                    name: 'Minesweeper',
-                    icon: 'icons/mine-0.png',
-                    type: 'app',
-                    action: 'openMinesweeper'
-                },
-                {
-                    name: 'Solitaire',
-                    icon: 'icons/cards-0.png',
-                    type: 'app',
-                    action: 'openSolitaire'
+                    name: 'System Tools',
+                    icon: 'icons/directory_program_group-0.png',
+                    type: 'folder',
+                    items: [
+                        {
+                            name: 'Disk Defragmenter',
+                            icon: 'icons/defrag-0.png',
+                            type: 'app',
+                            action: 'openDiskDefrag'
+                        },
+                        {
+                            name: 'ScanDisk',
+                            icon: 'icons/scandisk-0.png',
+                            type: 'app',
+                            action: 'openScanDisk'
+                        },
+                        {
+                            name: 'System Information',
+                            icon: 'icons/info_bubble-0.png',
+                            type: 'app',
+                            action: 'openSystemInfo'
+                        },
+                        {
+                            name: 'Scheduled Tasks',
+                            icon: 'icons/scheduled_tasks-0.png',
+                            type: 'app',
+                            action: 'openScheduledTasks'
+                        },
+                        {
+                            name: 'System Monitor',
+                            icon: 'icons/monitor_window-0.png',
+                            type: 'app',
+                            action: 'openSystemMonitor'
+                        },
+                        {
+                            name: 'Drive Converter (FAT32)',
+                            icon: 'icons/drive-0.png',
+                            type: 'app',
+                            action: 'openDriveConverter'
+                        }
+                    ]
                 }
             ]
         },
