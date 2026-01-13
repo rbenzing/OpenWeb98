@@ -121,3 +121,24 @@
     background-color: #808080;
     margin: 2px 0;
 }
+
+/* Submenu arrow indicator */
+.submenu-arrow {
+    margin-left: auto;
+    font-size: 10px;
+    padding-left: 10px;
+}
+
+/* Nested submenu positioning */
+#start-submenu, #nested-submenu {
+    position: absolute;
+    min-width: 180px;
+    height: auto;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Submenu items */
+.submenu-item {
+    position: relative;
+}

@@ -40,18 +40,22 @@
                 <div class="start-menu-item" data-action="programs">
                     <img src="icons/directory_program_group-0.png" alt="Programs">
                     <span>Programs</span>
+                    <span class="submenu-arrow">▶</span>
                 </div>
                 <div class="start-menu-item" data-action="documents">
                     <img src="icons/directory_open_file_mydocs-0.png" alt="Documents">
                     <span>Documents</span>
+                    <span class="submenu-arrow">▶</span>
                 </div>
                 <div class="start-menu-item" data-action="settings">
                     <img src="icons/directory_control_panel-0.png" alt="Settings">
                     <span>Settings</span>
+                    <span class="submenu-arrow">▶</span>
                 </div>
                 <div class="start-menu-item" data-action="find">
                     <img src="icons/search_file-0.png" alt="Find">
                     <span>Find</span>
+                    <span class="submenu-arrow">▶</span>
                 </div>
                 <div class="start-menu-item" data-action="help">
                     <img src="icons/help_book-0.png" alt="Help">
@@ -140,16 +144,35 @@
     </div>
 
     <!-- Include JavaScript files (order is important!) -->
+    <!-- Configuration and State -->
     <script src="js/config.js"></script>
     <script src="js/state.js"></script>
+
+    <!-- Data -->
+    <script src="js/data/fileSystemData.js"></script>
+    <script src="js/data/programsData.js"></script>
+
+    <!-- Utilities -->
+    <script src="js/utils/fileSystem.js"></script>
     <script src="js/utils/draggable.js"></script>
     <script src="js/utils/resizable.js"></script>
     <script src="js/utils/time.js"></script>
+
+    <!-- Window System (Core first, then modules) -->
+    <script src="js/windows/core.js"></script>
+    <script src="js/windows/apps.js"></script>
+
+    <!-- Components -->
     <script src="js/components/desktop.js"></script>
     <script src="js/components/taskbar.js"></script>
     <script src="js/components/windows.js"></script>
     <script src="js/components/menus.js"></script>
     <script src="js/components/recycleBin.js"></script>
+
+    <!-- Integration -->
+    <script src="js/windows/integration.js"></script>
+
+    <!-- Main Initialization -->
     <script src="js/main.js"></script>
 </body>
 </html>

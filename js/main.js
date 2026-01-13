@@ -51,6 +51,15 @@ WinOS.welcomeDialog = {
  * It calls initialization functions for all core components.
  */
 WinOS.init = function() {
+    // Initialize the File System
+    if (window.FileSystemUtil && window.FileSystemData) {
+        FileSystemUtil.init(FileSystemData);
+        State.fileSystem = FileSystemUtil;
+        console.log("File System initialized.");
+    } else {
+        console.error("FileSystemUtil or FileSystemData not loaded!");
+    }
+
     // Initialize the Desktop module
     if (WinOS.components.desktop && typeof WinOS.components.desktop.init === 'function') {
         WinOS.components.desktop.init();

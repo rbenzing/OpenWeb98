@@ -5,9 +5,386 @@
  * Handles the display and positioning of context menus (desktop and icon-specific) and manages Start menu interactions.
  */
 const Menus = {
+    submenuTimer: null,
+    currentSubmenu: null,
+
     // Initialize the menus module
     init: function() {
         this.setupDesktopContextMenu();
+        this.setupStartMenu();
+    },
+
+    // Setup Start Menu event handlers
+    setupStartMenu: function() {
+        const startMenuItems = document.querySelectorAll('.start-menu-item');
+
+        startMenuItems.forEach(item => {
+            const action = item.getAttribute('data-action');
+
+            // Click handler
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.handleStartMenuAction(action);
+            });
+
+            // Hover handler for items with submenus
+            if (['programs', 'documents', 'settings', 'find'].includes(action)) {
+                item.addEventListener('mouseenter', (e) => {
+                    this.hideCurrentSubmenu();
+                    this.submenuTimer = setTimeout(() => {
+                        this.showStartSubmenu(action, item);
+                    }, Config.SUBMENU_HOVER_DELAY);
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    if (this.submenuTimer) {
+                        clearTimeout(this.submenuTimer);
+                        this.submenuTimer = null;
+                    }
+                });
+            }
+        });
+    },
+
+    // Handle Start Menu item actions
+    handleStartMenuAction: function(action) {
+        switch(action) {
+            case 'windows-update':
+                this.openWindowsUpdate();
+                this.hideStartMenu();
+                break;
+            case 'programs':
+                // Submenu handled by hover
+                break;
+            case 'documents':
+                // Submenu handled by hover
+                break;
+            case 'settings':
+                // Submenu handled by hover
+                break;
+            case 'find':
+                // Submenu handled by hover
+                break;
+            case 'help':
+                this.openHelp();
+                this.hideStartMenu();
+                break;
+            case 'run':
+                if (WinOS && WinOS.components.windows) {
+                    WinOS.components.windows.createRunDialog();
+                }
+                this.hideStartMenu();
+                break;
+            case 'shutdown':
+                if (WinOS && WinOS.components.windows) {
+                    WinOS.components.windows.createShutdownDialog();
+                }
+                this.hideStartMenu();
+                break;
+        }
+    },
+
+    // Show submenu for Start Menu items
+    showStartSubmenu: function(menuType, parentItem) {
+        // Remove existing submenu if any
+        this.hideCurrentSubmenu();
+
+        const submenu = document.createElement('div');
+        submenu.className = 'start-menu context-menu';
+        submenu.id = 'start-submenu';
+
+        let menuData = [];
+
+        switch(menuType) {
+            case 'programs':
+                menuData = window.ProgramsData ? window.ProgramsData.items : [];
+                break;
+            case 'settings':
+                menuData = window.SettingsData ? window.SettingsData.items : [];
+                break;
+            case 'find':
+                menuData = window.FindData ? window.FindData.items : [];
+                break;
+            case 'documents':
+                menuData = window.DocumentsData ? window.DocumentsData.items : [];
+                break;
+        }
+
+        submenu.innerHTML = this.buildSubmenuHTML(menuData);
+        document.body.appendChild(submenu);
+
+        // Position submenu to the right of Start Menu
+        const startMenu = document.getElementById('start-menu');
+        const rect = parentItem.getBoundingClientRect();
+        const startMenuRect = startMenu.getBoundingClientRect();
+
+        submenu.style.display = 'block';
+        submenu.style.left = `${startMenuRect.right + Config.SUBMENU_OFFSET_X}px`;
+        submenu.style.top = `${rect.top + Config.SUBMENU_OFFSET_Y}px`;
+
+        // Adjust if offscreen
+        const submenuRect = submenu.getBoundingClientRect();
+        if (submenuRect.bottom > window.innerHeight) {
+            submenu.style.top = `${window.innerHeight - submenuRect.height - 5}px`;
+        }
+
+        this.currentSubmenu = submenu;
+        this.attachSubmenuListeners(submenu, menuType);
+    },
+
+    // Build HTML for submenu items
+    buildSubmenuHTML: function(items) {
+        let html = '<div class="start-menu-items">';
+
+        items.forEach(item => {
+            if (item.type === 'separator') {
+                html += '<div class="start-menu-separator"></div>';
+            } else if (item.type === 'folder') {
+                html += `
+                    <div class="start-menu-item submenu-item" data-action="${item.action || ''}" data-has-submenu="true">
+                        <img src="${item.icon}" alt="${item.name}">
+                        <span>${item.name}</span>
+                        <span class="submenu-arrow">▶</span>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="start-menu-item submenu-item" data-action="${item.action || ''}" data-path="${item.path || ''}">
+                        <img src="${item.icon}" alt="${item.name}">
+                        <span>${item.name}</span>
+                    </div>
+                `;
+            }
+        });
+
+        html += '</div>';
+        return html;
+    },
+
+    // Attach event listeners to submenu items
+    attachSubmenuListeners: function(submenu, parentMenuType) {
+        const items = submenu.querySelectorAll('.submenu-item');
+
+        items.forEach(item => {
+            const action = item.getAttribute('data-action');
+            const hasSubmenu = item.getAttribute('data-has-submenu') === 'true';
+            const path = item.getAttribute('data-path');
+
+            // Click handler
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                if (!hasSubmenu) {
+                    this.handleSubmenuAction(action, path);
+                    this.hideStartMenu();
+                    this.hideCurrentSubmenu();
+                }
+            });
+
+            // Hover for nested submenus
+            if (hasSubmenu) {
+                item.addEventListener('mouseenter', () => {
+                    const folderData = this.findFolderData(parentMenuType, item.textContent.trim().replace('▶', '').trim());
+                    if (folderData && folderData.items) {
+                        this.showNestedSubmenu(folderData.items, item);
+                    }
+                });
+            }
+        });
+
+        // Keep submenu open when hovering over it
+        submenu.addEventListener('mouseenter', () => {
+            if (this.submenuTimer) {
+                clearTimeout(this.submenuTimer);
+                this.submenuTimer = null;
+            }
+        });
+    },
+
+    // Find folder data by name
+    findFolderData: function(parentMenuType, folderName) {
+        let items = [];
+
+        switch(parentMenuType) {
+            case 'programs':
+                items = window.ProgramsData ? window.ProgramsData.items : [];
+                break;
+            case 'settings':
+                items = window.SettingsData ? window.SettingsData.items : [];
+                break;
+        }
+
+        for (let item of items) {
+            if (item.name === folderName && item.type === 'folder') {
+                return item;
+            }
+            // Recursively search in nested items
+            if (item.items) {
+                const found = this.searchInItems(item.items, folderName);
+                if (found) return found;
+            }
+        }
+
+        return null;
+    },
+
+    // Recursively search for folder in items
+    searchInItems: function(items, folderName) {
+        for (let item of items) {
+            if (item.name === folderName && item.type === 'folder') {
+                return item;
+            }
+            if (item.items) {
+                const found = this.searchInItems(item.items, folderName);
+                if (found) return found;
+            }
+        }
+        return null;
+    },
+
+    // Show nested submenu
+    showNestedSubmenu: function(items, parentItem) {
+        // Remove any existing nested submenu
+        const existingNested = document.getElementById('nested-submenu');
+        if (existingNested) {
+            existingNested.remove();
+        }
+
+        const submenu = document.createElement('div');
+        submenu.className = 'start-menu context-menu';
+        submenu.id = 'nested-submenu';
+        submenu.innerHTML = this.buildSubmenuHTML(items);
+        document.body.appendChild(submenu);
+
+        // Position to the right of parent item
+        const rect = parentItem.getBoundingClientRect();
+        submenu.style.display = 'block';
+        submenu.style.left = `${rect.right + Config.SUBMENU_OFFSET_X}px`;
+        submenu.style.top = `${rect.top + Config.SUBMENU_OFFSET_Y}px`;
+
+        // Adjust if offscreen
+        const submenuRect = submenu.getBoundingClientRect();
+        if (submenuRect.right > window.innerWidth) {
+            submenu.style.left = `${rect.left - submenuRect.width - Config.SUBMENU_OFFSET_X}px`;
+        }
+        if (submenuRect.bottom > window.innerHeight) {
+            submenu.style.top = `${window.innerHeight - submenuRect.height - 5}px`;
+        }
+
+        this.attachNestedSubmenuListeners(submenu);
+    },
+
+    // Attach listeners to nested submenu
+    attachNestedSubmenuListeners: function(submenu) {
+        const items = submenu.querySelectorAll('.submenu-item');
+
+        items.forEach(item => {
+            const action = item.getAttribute('data-action');
+
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.handleSubmenuAction(action);
+                this.hideStartMenu();
+                this.hideCurrentSubmenu();
+            });
+        });
+    },
+
+    // Handle submenu item actions
+    handleSubmenuAction: function(action, path) {
+        if (!action) return;
+
+        // Application launchers
+        const appLaunchers = {
+            openCalculator: () => this.launchApp('Calculator'),
+            openNotepad: () => this.launchApp('Notepad'),
+            openPaint: () => this.launchApp('Paint'),
+            openWordPad: () => this.launchApp('WordPad'),
+            openMinesweeper: () => this.launchApp('Minesweeper'),
+            openSolitaire: () => this.launchApp('Solitaire'),
+            openFreeCell: () => this.launchApp('FreeCell'),
+            openHearts: () => this.launchApp('Hearts'),
+            openInternetExplorer: () => {
+                if (WinOS && WinOS.components.windows) {
+                    WinOS.components.windows.openInternetExplorer();
+                }
+            },
+            openControlPanel: () => {
+                if (WinOS && WinOS.components.windows) {
+                    WinOS.components.windows.openControlPanel();
+                }
+            },
+            openMyComputer: () => {
+                if (WinOS && WinOS.components.windows) {
+                    WinOS.components.windows.openMyComputer();
+                }
+            },
+            openWindowsExplorer: () => {
+                if (WinOS && WinOS.components.windows) {
+                    WinOS.components.windows.openDriveC();
+                }
+            },
+            openRecentDocument: () => {
+                if (path && WinOS && WinOS.components.windows) {
+                    const fileName = path.split('\\').pop();
+                    WinOS.components.windows.openDocument(fileName);
+                }
+            },
+            openFindFiles: () => this.openFindFiles(),
+            openWindowsUpdate: () => this.openWindowsUpdate()
+        };
+
+        if (appLaunchers[action]) {
+            appLaunchers[action]();
+        } else {
+            console.log(`Action not implemented: ${action}`);
+        }
+    },
+
+    // Launch application (placeholder for future app implementation)
+    launchApp: function(appName) {
+        console.log(`Launching ${appName}...`);
+        // Placeholder - will be implemented in Phase 4
+        alert(`${appName} will be implemented in Phase 4!`);
+    },
+
+    // Open Windows Update
+    openWindowsUpdate: function() {
+        console.log('Opening Windows Update...');
+        alert('Windows Update will be implemented in Phase 6!');
+    },
+
+    // Open Help
+    openHelp: function() {
+        console.log('Opening Help...');
+        alert('Windows Help will be implemented in Phase 6!');
+    },
+
+    // Open Find Files dialog
+    openFindFiles: function() {
+        console.log('Opening Find Files...');
+        alert('Find Files dialog will be implemented in Phase 6!');
+    },
+
+    // Hide current submenu
+    hideCurrentSubmenu: function() {
+        if (this.currentSubmenu) {
+            this.currentSubmenu.remove();
+            this.currentSubmenu = null;
+        }
+        const nested = document.getElementById('nested-submenu');
+        if (nested) {
+            nested.remove();
+        }
+    },
+
+    // Hide Start Menu and all submenus
+    hideStartMenu: function() {
+        const startMenu = document.getElementById('start-menu');
+        if (startMenu) {
+            startMenu.style.display = 'none';
+        }
+        this.hideCurrentSubmenu();
     },
 
     // Setup event listeners for desktop context menu
