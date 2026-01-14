@@ -45,6 +45,25 @@
         }
     };
 
+    // Enhanced Explorer
+    Windows.launchMyComputer = function() {
+        if (WindowsExplorer && WindowsExplorer.openMyComputer) {
+            return WindowsExplorer.openMyComputer();
+        } else {
+            // Fallback to existing method
+            return Windows.openMyComputer();
+        }
+    };
+
+    Windows.launchControlPanel = function() {
+        if (WindowsExplorer && WindowsExplorer.openControlPanel) {
+            return WindowsExplorer.openControlPanel();
+        } else {
+            // Fallback to existing method
+            return Windows.openControlPanel();
+        }
+    };
+
     // Update menus integration to use new app launchers
     if (window.Menus) {
         const originalLaunchApp = window.Menus.launchApp;

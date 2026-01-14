@@ -136,9 +136,34 @@
     height: auto;
     max-height: 400px;
     overflow-y: auto;
+    padding: 3px 0;
+}
+
+/* Submenu container - force vertical stacking */
+#start-submenu .start-menu-items,
+#nested-submenu .start-menu-items {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 /* Submenu items */
 .submenu-item {
     position: relative;
+    height: 24px;
+    padding: 3px 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.submenu-item:hover {
+    background-color: #000080;
+    color: white;
+}
+
+.submenu-item img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
 }

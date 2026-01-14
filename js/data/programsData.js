@@ -8,7 +8,7 @@ const ProgramsData = {
     items: [
         {
             name: 'Accessories',
-            icon: 'icons/directory_program_group-0.png',
+            icon: 'icons/directory_closed-1.png',
             type: 'folder',
             items: [
                 {
@@ -37,7 +37,7 @@ const ProgramsData = {
                 },
                 {
                     name: 'WordPad',
-                    icon: 'icons/wordpad-0.png',
+                    icon: 'icons/write_wordpad-0.png',
                     type: 'app',
                     action: 'openWordPad'
                 },
@@ -46,7 +46,7 @@ const ProgramsData = {
                 },
                 {
                     name: 'Communications',
-                    icon: 'icons/directory_program_group-0.png',
+                    icon: 'icons/directory_closed-1.png',
                     type: 'folder',
                     items: [
                         {
@@ -65,7 +65,7 @@ const ProgramsData = {
                 },
                 {
                     name: 'Entertainment',
-                    icon: 'icons/directory_program_group-0.png',
+                    icon: 'icons/directory_closed-1.png',
                     type: 'folder',
                     items: [
                         {
@@ -127,7 +127,7 @@ const ProgramsData = {
                 },
                 {
                     name: 'System Tools',
-                    icon: 'icons/directory_program_group-0.png',
+                    icon: 'icons/directory_closed-1.png',
                     type: 'folder',
                     items: [
                         {
@@ -181,13 +181,13 @@ const ProgramsData = {
         },
         {
             name: 'Outlook Express',
-            icon: 'icons/outlook-0.png',
+            icon: 'icons/outlook_express-0.png',
             type: 'app',
             action: 'openOutlookExpress'
         },
         {
             name: 'Windows Explorer',
-            icon: 'icons/explorer-0.png',
+            icon: 'icons/computer_explorer-0.png',
             type: 'app',
             action: 'openWindowsExplorer'
         },
@@ -205,7 +205,7 @@ const ProgramsData = {
         },
         {
             name: 'Startup',
-            icon: 'icons/directory_open-0.png',
+            icon: 'icons/directory_open_cool-0.png',
             type: 'folder',
             items: []
         }

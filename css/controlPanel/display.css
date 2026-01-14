@@ -1,0 +1,782 @@
+/* css/controlPanel/display.css */
+
+/* Display Properties Dialog - Windows 98 Style */
+.display-properties-dialog .window-content {
+    padding: 0;
+    overflow: hidden;
+    background-color: #c0c0c0;
+}
+
+.display-properties-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #c0c0c0;
+}
+
+/* Tab Strip - Windows 98 Style */
+.tab-strip {
+    display: flex;
+    background-color: #c0c0c0;
+    padding: 3px 3px 0 3px;
+    gap: 0;
+    border-bottom: none;
+}
+
+.tab-button {
+    background-color: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    border-bottom: none;
+    padding: 3px 10px 4px 10px;
+    font-size: 11px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    cursor: pointer;
+    position: relative;
+    margin-right: 2px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.tab-button:hover {
+    background-color: #d4d0c8;
+}
+
+.tab-button.active {
+    background-color: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #ffffff #c0c0c0 #ffffff;
+    border-bottom: 1px solid #c0c0c0;
+    padding: 3px 10px 5px 10px;
+    z-index: 2;
+    position: relative;
+    bottom: -1px;
+}
+
+/* Tab Content Area */
+.tab-content-area {
+    flex: 1;
+    position: relative;
+    background-color: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    border-top-color: #808080;
+    padding: 12px;
+    margin: 0 3px 3px 3px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Monitor Preview - Simplified Windows 98 Style */
+.monitor-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0 15px 0;
+}
+
+.monitor-frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.monitor-screen {
+    width: 220px;
+    height: 164px;
+    background: #e0e0e0;
+    border: 3px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    position: relative;
+    box-shadow: inset 1px 1px 0 rgba(0,0,0,0.2);
+}
+
+.monitor-screen::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid #000;
+    pointer-events: none;
+}
+
+.monitor-desktop {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    background-color: #008080;
+}
+
+.monitor-stand {
+    width: 80px;
+    height: 6px;
+    background: linear-gradient(to bottom, #d0d0d0, #a0a0a0);
+    margin-top: 3px;
+    position: relative;
+}
+
+.monitor-stand::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 12px;
+    background: linear-gradient(to bottom, #c0c0c0, #808080);
+    border-radius: 0 0 50% 50%;
+}
+
+/* Settings Tab - Match Screenshot */
+.settings-preview {
+    background: #008080;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.mini-window {
+    width: 130px;
+    height: 95px;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-titlebar {
+    height: 18px;
+    background: linear-gradient(to right, #000080, #1084d0);
+    padding: 2px 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mini-titlebar::after {
+    content: '';
+    width: 10px;
+    height: 2px;
+    background: white;
+}
+
+.mini-content {
+    flex: 1;
+    background: white;
+    margin: 2px;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 11px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    margin-bottom: 4px;
+}
+
+.form-group > label {
+    font-weight: normal;
+}
+
+.display-adapter {
+    font-size: 11px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    padding: 4px 6px;
+    background: white;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    margin: 0 0 4px 0;
+}
+
+/* Select Boxes */
+.win98-select {
+    width: 100%;
+    background: white;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 3px;
+    font-size: 11px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+}
+
+.win98-select:focus {
+    outline: 1px dotted #000;
+    outline-offset: -2px;
+}
+
+/* Color Bar */
+.color-bar {
+    margin-top: 6px;
+    height: 24px;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 2px;
+    background: white;
+}
+
+.color-bar > div {
+    height: 100%;
+    background: linear-gradient(to right,
+        #ff00ff 0%,
+        #0000ff 16.66%,
+        #00ffff 33.33%,
+        #00ff00 50%,
+        #ffff00 66.66%,
+        #ff0000 83.33%,
+        #ff00ff 100%);
+}
+
+/* Resolution Control */
+.resolution-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.resolution-control .win98-button {
+    min-width: 60px;
+    padding: 3px 8px;
+}
+
+.resolution-slider {
+    flex: 1;
+    height: 24px;
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 4px 8px;
+    position: relative;
+}
+
+.resolution-slider input[type="range"] {
+    width: 100%;
+    height: 16px;
+    -webkit-appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.resolution-slider input[type="range"]::-webkit-slider-track {
+    width: 100%;
+    height: 4px;
+    background: #808080;
+    border: none;
+}
+
+.resolution-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 18px;
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #000000 #000000 #ffffff;
+    cursor: pointer;
+}
+
+.resolution-slider input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    background: #808080;
+    border: none;
+}
+
+.resolution-slider input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 18px;
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #000000 #000000 #ffffff;
+    cursor: pointer;
+}
+
+.resolution-display {
+    text-align: center;
+    font-size: 11px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    padding: 4px 0;
+}
+
+/* Checkboxes */
+.checkbox-group {
+    margin: 8px 0;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    margin-bottom: 6px;
+}
+
+input[type="checkbox"] {
+    width: 13px;
+    height: 13px;
+    margin: 0;
+}
+
+/* Buttons */
+.win98-button {
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #000000 #000000 #ffffff;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    cursor: pointer;
+    min-width: 75px;
+    text-align: center;
+}
+
+.win98-button:hover {
+    background: #d4d0c8;
+}
+
+.win98-button:active {
+    border-color: #000000 #ffffff #ffffff #000000;
+    padding: 5px 11px 3px 13px;
+}
+
+.win98-button:focus {
+    outline: 1px dotted #000;
+    outline-offset: -4px;
+}
+
+/* Dialog Buttons */
+.dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 8px 8px 8px 8px;
+    background: #c0c0c0;
+    border-top: 1px solid #ffffff;
+}
+
+.dialog-buttons .win98-button {
+    min-width: 75px;
+}
+
+/* Background Tab */
+.wallpaper-select-container {
+    margin: 10px 0;
+}
+
+.wallpaper-select-container select {
+    width: 100%;
+    height: 80px;
+}
+
+.pattern-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.pattern-row label {
+    font-size: 11px;
+    min-width: 50px;
+}
+
+.pattern-row select {
+    flex: 1;
+}
+
+.pattern-row .win98-button {
+    min-width: 85px;
+}
+
+.display-options {
+    margin: 10px 0;
+}
+
+.display-options label {
+    display: block;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 6px;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+}
+
+/* Screen Saver Tab */
+.screensaver-preview {
+    background: #000;
+}
+
+.screensaver-select-container {
+    margin: 10px 0;
+}
+
+.screensaver-buttons {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0;
+}
+
+fieldset {
+    border: 1px groove #ffffff;
+    padding: 10px;
+    margin: 12px 0;
+}
+
+legend {
+    font-size: 11px;
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    padding: 0 4px;
+}
+
+.wait-time-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+}
+
+.wait-time-group label {
+    font-size: 11px;
+}
+
+.wait-time-group input[type="number"] {
+    width: 50px;
+    padding: 2px 4px;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    font-size: 11px;
+}
+
+/* Appearance Tab */
+.appearance-preview {
+    height: 140px;
+    background: #008080;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 10px;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.preview-window {
+    position: absolute;
+    left: 15px;
+    top: 12px;
+    width: 160px;
+    height: 100px;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+.preview-titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: white;
+    padding: 3px 4px;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.preview-buttons {
+    display: flex;
+    gap: 2px;
+}
+
+.preview-buttons button {
+    width: 16px;
+    height: 14px;
+    font-size: 8px;
+    padding: 0;
+    background: #c0c0c0;
+    border: 1px outset #c0c0c0;
+    line-height: 1;
+}
+
+.preview-content {
+    background: #c0c0c0;
+    padding: 2px;
+    height: calc(100% - 20px);
+}
+
+.preview-menu {
+    font-size: 11px;
+    padding: 2px 4px;
+}
+
+.preview-text {
+    background: white;
+    padding: 6px;
+    margin: 2px;
+    font-size: 11px;
+    min-height: 40px;
+}
+
+.preview-inactive-window {
+    position: absolute;
+    right: 15px;
+    top: 45px;
+    width: 120px;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+.preview-titlebar-inactive {
+    background: linear-gradient(to right, #808080, #b4b4b4);
+    color: #c0c0c0;
+    padding: 3px 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.preview-tooltip {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+    background: #ffffe1;
+    border: 1px solid #000;
+    padding: 2px 6px;
+    font-size: 11px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.scheme-controls {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0;
+}
+
+.item-customization {
+    margin: 12px 0;
+}
+
+.size-color-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.size-color-row label {
+    font-size: 11px;
+    min-width: 35px;
+}
+
+.size-color-row input[type="number"] {
+    width: 50px;
+    padding: 2px 4px;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+}
+
+.size-color-row input[type="color"] {
+    width: 40px;
+    height: 22px;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    cursor: pointer;
+}
+
+.font-options {
+    margin: 12px 0;
+}
+
+.font-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.font-row label {
+    font-size: 11px;
+}
+
+.font-row select {
+    flex: 1;
+}
+
+.font-row input[type="number"] {
+    width: 50px;
+    padding: 2px 4px;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+}
+
+.font-style-checks {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+/* Effects Tab */
+.icon-customization {
+    margin: 12px 0;
+}
+
+.icon-list {
+    display: flex;
+    gap: 20px;
+    padding: 12px;
+    justify-content: space-around;
+}
+
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.icon-item img {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-item span {
+    font-size: 11px;
+    text-align: center;
+}
+
+.icon-item .win98-button {
+    min-width: 90px;
+    font-size: 10px;
+    padding: 3px 6px;
+}
+
+.visual-effects fieldset {
+    margin-top: 12px;
+}
+
+/* Web Tab */
+.active-desktop-options {
+    margin: 12px 0;
+}
+
+.web-items-container {
+    margin: 15px 0;
+}
+
+.web-items-list select {
+    width: 100%;
+    height: 100px;
+    margin: 8px 0;
+}
+
+.web-item-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+/* Screen Saver Animations */
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* Screensaver Fullscreen */
+.screensaver-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 10000;
+    cursor: none;
+}
+
+/* Wallpaper Classes */
+.wallpaper-clouds {
+    background: #4a90d9;
+}
+
+.wallpaper-setup {
+    background: #000080;
+}
+
+.wallpaper-black-thatch {
+    background: repeating-linear-gradient(
+        45deg,
+        #000 0,
+        #000 2px,
+        #222 2px,
+        #222 4px
+    );
+}
+
+.wallpaper-blue-rivets {
+    background: #000080;
+    background-image:
+        repeating-linear-gradient(0deg, transparent 0, transparent 8px, rgba(255,255,255,0.1) 8px, rgba(255,255,255,0.1) 9px),
+        repeating-linear-gradient(90deg, transparent 0, transparent 8px, rgba(255,255,255,0.1) 8px, rgba(255,255,255,0.1) 9px);
+}
+
+.wallpaper-bubbles {
+    background: radial-gradient(circle at 25% 35%, rgba(255,255,255,0.2) 0%, transparent 40%),
+                radial-gradient(circle at 65% 65%, rgba(255,255,255,0.2) 0%, transparent 40%),
+                radial-gradient(circle at 80% 25%, rgba(255,255,255,0.2) 0%, transparent 40%),
+                #0080c0;
+}
+
+.wallpaper-gold-weave {
+    background: repeating-linear-gradient(
+        0deg,
+        #c4a000 0,
+        #c4a000 2px,
+        #a48800 2px,
+        #a48800 4px
+    );
+}
+
+.wallpaper-red-blocks {
+    background: repeating-conic-gradient(
+        from 0deg,
+        #8b0000 0deg 90deg,
+        #a00000 90deg 180deg,
+        #8b0000 180deg 270deg,
+        #a00000 270deg 360deg
+    );
+    background-size: 20px 20px;
+}

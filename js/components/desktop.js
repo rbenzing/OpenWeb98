@@ -20,14 +20,16 @@ const Desktop = {
     // Create the initial set of desktop icons.
     createDesktopIcons: function() {
         const icons = [
-            { 
-                name: 'My Computer', 
-                icon: 'icons/computer-3.png', 
-                action: () => { 
-                    if (WinOS && WinOS.components.windows) {
+            {
+                name: 'My Computer',
+                icon: 'icons/computer-3.png',
+                action: () => {
+                    if (Windows && Windows.launchMyComputer) {
+                        Windows.launchMyComputer();
+                    } else if (WinOS && WinOS.components.windows) {
                         WinOS.components.windows.openMyComputer();
                     }
-                } 
+                }
             },
             { 
                 name: 'Recycle Bin', 

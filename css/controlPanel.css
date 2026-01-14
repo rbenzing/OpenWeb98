@@ -1,4 +1,6 @@
 /* Control Panel */
+@import url('controlPanel/display.css');
+
 .control-panel-content {
     display: flex;
     flex-wrap: wrap;

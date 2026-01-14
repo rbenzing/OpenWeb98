@@ -7,6 +7,7 @@
 const Menus = {
     submenuTimer: null,
     currentSubmenu: null,
+    clickOutsideHandler: null,
 
     // Initialize the menus module
     init: function() {
@@ -29,7 +30,7 @@ const Menus = {
 
             // Hover handler for items with submenus
             if (['programs', 'documents', 'settings', 'find'].includes(action)) {
-                item.addEventListener('mouseenter', (e) => {
+                item.addEventListener('mouseenter', () => {
                     this.hideCurrentSubmenu();
                     this.submenuTimer = setTimeout(() => {
                         this.showStartSubmenu(action, item);
@@ -130,6 +131,7 @@ const Menus = {
 
         this.currentSubmenu = submenu;
         this.attachSubmenuListeners(submenu, menuType);
+        this.setupClickOutsideHandler();
     },
 
     // Build HTML for submenu items
@@ -272,6 +274,7 @@ const Menus = {
         }
 
         this.attachNestedSubmenuListeners(submenu);
+        this.setupClickOutsideHandler();
     },
 
     // Attach listeners to nested submenu
@@ -341,29 +344,28 @@ const Menus = {
         }
     },
 
-    // Launch application (placeholder for future app implementation)
+    // Launch application
     launchApp: function(appName) {
         console.log(`Launching ${appName}...`);
-        // Placeholder - will be implemented in Phase 4
-        alert(`${appName} will be implemented in Phase 4!`);
+        // Implementation handled by integration.js
     },
 
     // Open Windows Update
     openWindowsUpdate: function() {
         console.log('Opening Windows Update...');
-        alert('Windows Update will be implemented in Phase 6!');
+        // Placeholder for future implementation
     },
 
     // Open Help
     openHelp: function() {
         console.log('Opening Help...');
-        alert('Windows Help will be implemented in Phase 6!');
+        // Placeholder for future implementation
     },
 
     // Open Find Files dialog
     openFindFiles: function() {
         console.log('Opening Find Files...');
-        alert('Find Files dialog will be implemented in Phase 6!');
+        // Placeholder for future implementation
     },
 
     // Hide current submenu
@@ -385,6 +387,44 @@ const Menus = {
             startMenu.style.display = 'none';
         }
         this.hideCurrentSubmenu();
+        this.removeClickOutsideHandler();
+    },
+
+    // Setup click outside handler for Start Menu and submenus
+    setupClickOutsideHandler: function() {
+        // Remove old handler if exists
+        this.removeClickOutsideHandler();
+
+        // Create new handler with slight delay to avoid immediate closure
+        setTimeout(() => {
+            this.clickOutsideHandler = (e) => {
+                const startMenu = document.getElementById('start-menu');
+                const startButton = document.getElementById('start-button');
+                const submenu = document.getElementById('start-submenu');
+                const nestedSubmenu = document.getElementById('nested-submenu');
+
+                // Check if click is outside all menus
+                const clickedOutside =
+                    !startMenu?.contains(e.target) &&
+                    !startButton?.contains(e.target) &&
+                    !submenu?.contains(e.target) &&
+                    !nestedSubmenu?.contains(e.target);
+
+                if (clickedOutside) {
+                    this.hideStartMenu();
+                }
+            };
+
+            document.addEventListener('click', this.clickOutsideHandler);
+        }, 0);
+    },
+
+    // Remove click outside handler
+    removeClickOutsideHandler: function() {
+        if (this.clickOutsideHandler) {
+            document.removeEventListener('click', this.clickOutsideHandler);
+            this.clickOutsideHandler = null;
+        }
     },
 
     // Setup event listeners for desktop context menu
@@ -430,8 +470,11 @@ const Menus = {
                 // Could create a new folder on desktop
                 break;
             case 'properties':
-                console.log('Properties clicked');
-                // Could open desktop properties dialog
+                // Open Display Properties dialog
+                if (window.DisplayProperties) {
+                    DisplayProperties.open();
+                }
+                this.hideContextMenus();
                 break;
         }
     },
@@ -497,7 +540,7 @@ const Menus = {
         if (iconData.name === 'Recycle Bin') {
             menu.innerHTML = `
                 <div class="context-menu-item" data-action="open">
-                    <img src="icons/directory_open-0.png" alt="Open">
+                    <img src="icons/directory_open_cool-0.png" alt="Open">
                     <span>Open</span>
                 </div>
                 <div class="context-menu-separator"></div>
@@ -512,14 +555,14 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="properties">
-                    <img src="icons/properties-0.png" alt="Properties">
+                    <img src="icons/display_properties-0.png" alt="Properties">
                     <span>Properties</span>
                 </div>
             `;
         } else {
             menu.innerHTML = `
                 <div class="context-menu-item" data-action="open">
-                    <img src="icons/directory_open-0.png" alt="Open">
+                    <img src="icons/directory_open_cool-0.png" alt="Open">
                     <span>Open</span>
                 </div>
                 <div class="context-menu-separator"></div>
@@ -542,7 +585,7 @@ const Menus = {
                     <span>Rename</span>
                 </div>
                 <div class="context-menu-item" data-action="properties">
-                    <img src="icons/properties-0.png" alt="Properties">
+                    <img src="icons/display_properties-0.png" alt="Properties">
                     <span>Properties</span>
                 </div>
             `;
@@ -627,7 +670,7 @@ const Menus = {
             // Context menu for drives (C:, A:, D:)
             menu.innerHTML = `
                 <div class="context-menu-item" data-action="open">
-                    <img src="icons/directory_open-0.png" alt="Open">
+                    <img src="icons/directory_open_cool-0.png" alt="Open">
                     <span>Open</span>
                 </div>
                 <div class="context-menu-item" data-action="explore">
@@ -646,7 +689,7 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="properties">
-                    <img src="icons/properties-0.png" alt="Properties">
+                    <img src="icons/display_properties-0.png" alt="Properties">
                     <span>Properties</span>
                 </div>
             `;
@@ -654,7 +697,7 @@ const Menus = {
             // Context menu for folders
             menu.innerHTML = `
                 <div class="context-menu-item" data-action="open">
-                    <img src="icons/directory_open-0.png" alt="Open">
+                    <img src="icons/directory_open_cool-0.png" alt="Open">
                     <span>Open</span>
                 </div>
                 <div class="context-menu-item" data-action="explore">
@@ -681,7 +724,7 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="properties">
-                    <img src="icons/properties-0.png" alt="Properties">
+                    <img src="icons/display_properties-0.png" alt="Properties">
                     <span>Properties</span>
                 </div>
             `;
@@ -699,7 +742,7 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="properties">
-                    <img src="icons/properties-0.png" alt="Properties">
+                    <img src="icons/display_properties-0.png" alt="Properties">
                     <span>Properties</span>
                 </div>
             `;
@@ -739,7 +782,7 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="properties">
-                    <img src="icons/properties-0.png" alt="Properties">
+                    <img src="icons/display_properties-0.png" alt="Properties">
                     <span>Properties</span>
                 </div>
             `;
@@ -806,7 +849,7 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="paste">
-                    <img src="icons/paste-0.png" alt="Paste">
+                    <img src="icons/document-0.png" alt="Paste">
                     <span>Paste</span>
                 </div>
                 <div class="context-menu-separator"></div>
@@ -816,7 +859,7 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="properties">
-                    <img src="icons/properties-0.png" alt="Properties">
+                    <img src="icons/display_properties-0.png" alt="Properties">
                     <span>Properties</span>
                 </div>
             `;
@@ -837,11 +880,11 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="paste">
-                    <img src="icons/paste-0.png" alt="Paste">
+                    <img src="icons/document-0.png" alt="Paste">
                     <span>Paste</span>
                 </div>
                 <div class="context-menu-item" data-action="pasteShortcut">
-                    <img src="icons/paste_shortcut-0.png" alt="Paste Shortcut">
+                    <img src="icons/document-0.png" alt="Paste Shortcut">
                     <span>Paste Shortcut</span>
                 </div>
                 <div class="context-menu-separator"></div>
@@ -851,7 +894,7 @@ const Menus = {
                 </div>
                 <div class="context-menu-separator"></div>
                 <div class="context-menu-item" data-action="properties">
-                    <img src="icons/properties-0.png" alt="Properties">
+                    <img src="icons/display_properties-0.png" alt="Properties">
                     <span>Properties</span>
                 </div>
             `;

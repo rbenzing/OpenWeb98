@@ -29,14 +29,17 @@ const Taskbar = {
             e.stopPropagation();
             if (this.startMenu.style.display === 'block') {
                 this.startMenu.style.display = 'none';
+                // Remove click outside handler when closing
+                if (WinOS && WinOS.components.menus) {
+                    WinOS.components.menus.removeClickOutsideHandler();
+                }
             } else {
                 this.startMenu.style.display = 'block';
+                // Setup click outside handler when opening
+                if (WinOS && WinOS.components.menus) {
+                    WinOS.components.menus.setupClickOutsideHandler();
+                }
             }
-        });
-
-        // Hide the Start menu when clicking anywhere outside.
-        document.addEventListener('click', () => {
-            this.startMenu.style.display = 'none';
         });
     },
 

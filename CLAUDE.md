@@ -41,8 +41,20 @@ This is a static web application with no build process. To run:
 ### Modular Window System
 - **Core**: [js/windows/core.js](js/windows/core.js) - Window lifecycle management
 - **Apps**: [js/windows/apps.js](js/windows/apps.js) - Application windows
+- **Explorer**: [js/windows/explorer.js](js/windows/explorer.js) - Windows 98 Explorer with view modes
 - **Integration**: [js/windows/integration.js](js/windows/integration.js) - Bridges old and new systems
 - Backwards compatible with existing [js/components/windows.js](js/components/windows.js)
+
+### Windows Explorer (NEW)
+- **Location**: [js/windows/explorer.js](js/windows/explorer.js), [css/explorer.css](css/explorer.css)
+- Authentic Windows 98 Explorer interface with toolbar, address bar, and status bar
+- **Four View Modes**: Large Icons, Small Icons, List, Details (switchable via Views button)
+- **SVG Toolbar Icons**: All icons embedded as inline SVG (no external files needed)
+- **Applies to all explorer-style windows**: My Computer, Control Panel, Recycle Bin, folders
+- Interactive item selection (click, Ctrl+click for multiple)
+- Proper icon alignment and spacing matching Windows 98
+- Address bar with dropdown button (structure ready for navigation history)
+- Status bar shows object count
 
 ### Enhanced Configuration
 - **Location**: [js/config.js](js/config.js)
@@ -198,6 +210,30 @@ State.fileSystem.getFileContent('C:\\file.txt');
 State.fileSystem.setFileContent('C:\\file.txt', 'New content');
 ```
 
+### Use Windows Explorer
+```javascript
+// Open explorer-style windows
+Windows.launchMyComputer();      // My Computer with drives
+Windows.launchControlPanel();    // Control Panel with applets
+
+// Or use WindowsExplorer directly
+WindowsExplorer.openMyComputer();
+WindowsExplorer.openControlPanel();
+```
+
+**View Modes**: Click the "Views" toolbar button to switch between:
+- Large Icons (75x75px with 32x32 icons)
+- Small Icons (compact vertical columns)
+- List (simple list view)
+- Details (spreadsheet-style with Name, Size, Type, Modified columns)
+
+**Features**:
+- Click to select items (Ctrl+click for multiple selection)
+- Double-click to open/navigate
+- All toolbar buttons with SVG icons
+- Address bar with location and dropdown
+- Status bar shows object count
+
 ### Add Programs to Start Menu
 Edit [js/data/programsData.js](js/data/programsData.js) to add items to Programs submenu:
 ```javascript
@@ -207,6 +243,54 @@ Edit [js/data/programsData.js](js/data/programsData.js) to add items to Programs
     type: 'app',
     action: 'openMyApp'  // Then implement in menus.js handleSubmenuAction
 }
+```
+
+### Create New Explorer-Style Windows
+To create a new explorer window (like a folder or special view):
+
+```javascript
+// Add method to WindowsExplorer in js/windows/explorer.js
+openMyFolder: function() {
+    const content = this.buildExplorerContent('My Folder', this.getMyFolderItems());
+
+    const windowData = WindowCore.createWindow(
+        'My Folder',
+        content,
+        640,
+        480,
+        null,
+        null,
+        true,
+        'icons/folder-icon.png'
+    );
+
+    this.initializeExplorer(windowData.element);
+    return windowData;
+},
+
+// Add items data method
+getMyFolderItems: function() {
+    return [
+        {
+            name: 'File.txt',
+            icon: 'icons/file_text-0.png',
+            action: 'openFile',
+            size: '1 KB',
+            type: 'Text Document',
+            modified: '12/25/1998'
+        }
+        // ... more items
+    ];
+}
+```
+
+Then wire it in [js/windows/integration.js](js/windows/integration.js):
+```javascript
+Windows.launchMyFolder = function() {
+    if (WindowsExplorer && WindowsExplorer.openMyFolder) {
+        return WindowsExplorer.openMyFolder();
+    }
+};
 ```
 
 ## Adding New Features
@@ -234,3 +318,234 @@ Edit [js/data/programsData.js](js/data/programsData.js) to add items to Programs
 - Event delegation is used for dynamic elements (task buttons, menu items)
 - Window state is preserved during minimize/maximize operations in `prevDimensions`
 - Z-index management ensures proper window stacking order
+
+## Best Practices & Common Pitfalls
+
+### Icon File Validation
+**ALWAYS verify icon files exist before using them:**
+
+```bash
+# Check if icon exists before adding to code
+ls icons/ | grep "icon-name"
+```
+
+**Common icon mapping issues:**
+- `help_book-0.png` → Use `help_book_small-0.png` (check available sizes)
+- `shut_down-0.png` → Use `shut_down_normal-0.png` or `shut_down_cool-0.png`
+- `directory_program_group-0.png` → Use `directory_closed-1.png`
+- `paste-0.png`, `properties-0.png` → Check for alternatives like `document-0.png`, `display_properties-0.png`
+
+**Icon naming conventions:**
+- Many icons have variants: `-0.png`, `-1.png`, `_small`, `_cool`, `_normal`, `_big`
+- Check [icons/](icons/) directory or use: `ls icons/ | grep "keyword"` to find matches
+- Prefer existing icon variants over creating placeholders
+
+### Content Security Policy (CSP)
+The CSP in [index.html](index.html) must allow necessary resources:
+
+```html
+<meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    img-src https://win98icons.alexmeub.com 'self' data:;
+    font-src 'self' https://unpkg.com;
+    style-src 'self' 'unsafe-inline';
+    script-src 'self' 'unsafe-inline';">
+```
+
+**Required directives:**
+- `font-src https://unpkg.com` - For MS Sans Serif fonts
+- `img-src data:` - For inline SVG/canvas images
+- `img-src https://win98icons.alexmeub.com` - External icon fallbacks
+
+### UI Polish - No Blocking Dialogs
+**NEVER use `alert()`, `confirm()`, or `prompt()` in production code:**
+
+❌ **Bad:**
+```javascript
+launchApp: function(appName) {
+    alert(`${appName} will be implemented later!`);
+}
+```
+
+✅ **Good:**
+```javascript
+launchApp: function(appName) {
+    console.log(`Launching ${appName}...`);
+    // Implementation or silent placeholder
+}
+```
+
+**Placeholders should:**
+- Log to console for debugging
+- Do nothing visibly (don't interrupt user)
+- Have comments indicating future implementation
+
+### Submenu CSS Pattern
+When creating submenus, ALWAYS use flex column layout:
+
+```css
+/* Container must specify vertical layout */
+#my-submenu .menu-items {
+    display: flex;
+    flex-direction: column;  /* CRITICAL: prevents horizontal layout */
+    width: 100%;
+}
+
+/* Items need proper styling */
+.submenu-item {
+    position: relative;
+    height: 24px;
+    padding: 3px 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.submenu-item:hover {
+    background-color: #000080;
+    color: white;
+}
+```
+
+**Common mistakes:**
+- Forgetting `flex-direction: column` causes horizontal layout
+- Not setting proper height/padding makes items overlap
+- Missing hover styles breaks visual feedback
+
+### Click-Outside Handler Pattern
+For menus that should close when clicking outside:
+
+```javascript
+setupClickOutsideHandler: function() {
+    // Remove old handler first
+    this.removeClickOutsideHandler();
+
+    // Use setTimeout to avoid immediate closure
+    setTimeout(() => {
+        this.clickOutsideHandler = (e) => {
+            const menu = document.getElementById('my-menu');
+            const trigger = document.getElementById('trigger-button');
+
+            const clickedOutside =
+                !menu?.contains(e.target) &&
+                !trigger?.contains(e.target);
+
+            if (clickedOutside) {
+                this.hideMenu();
+            }
+        };
+
+        document.addEventListener('click', this.clickOutsideHandler);
+    }, 0);
+},
+
+removeClickOutsideHandler: function() {
+    if (this.clickOutsideHandler) {
+        document.removeEventListener('click', this.clickOutsideHandler);
+        this.clickOutsideHandler = null;
+    }
+}
+```
+
+**Key points:**
+- Always clean up old handlers before adding new ones
+- Use `setTimeout(() => {}, 0)` to avoid race conditions
+- Check all related elements (menu, trigger, submenus)
+- Call cleanup in hide/close methods
+
+### Integration Between Old and New Code
+When adding new functionality alongside existing code:
+
+**Use integration layer pattern:**
+```javascript
+// js/windows/integration.js
+Windows.launchMyApp = function() {
+    if (WindowsApps && WindowsApps.openMyApp) {
+        return WindowsApps.openMyApp();
+    } else {
+        // Fallback to old implementation
+        return this.createMyAppWindow();
+    }
+};
+```
+
+**Benefits:**
+- Maintains backward compatibility
+- Allows gradual migration
+- Provides fallbacks for incomplete features
+- Keeps old code functional while adding new features
+
+### Component Communication
+**Preferred communication pattern:**
+
+```javascript
+// Check if component exists before calling
+if (WinOS && WinOS.components.myComponent) {
+    WinOS.components.myComponent.myMethod();
+}
+```
+
+**When modifying shared state:**
+```javascript
+// Use State object for shared data
+State.mySharedData = newValue;
+
+// Notify other components if needed
+if (WinOS && WinOS.components.otherComponent) {
+    WinOS.components.otherComponent.onDataChange();
+}
+```
+
+### Script Loading Order
+**CRITICAL:** Scripts must load in dependency order (see [index.html](index.html)):
+
+1. Config & State (no dependencies)
+2. Data files (depend on nothing)
+3. Utils (depend on Config/State)
+4. Window Core (depends on Config/State/Utils)
+5. Window Modules (depend on Core)
+6. Components (depend on Config/State/Utils)
+7. Integration (depends on Components + Window Modules)
+8. Main initialization (depends on everything)
+
+**Never:**
+- Load integration before components
+- Load apps before core
+- Load components before utils
+- Access objects before they're defined
+
+### Testing Checklist
+Before committing changes:
+
+- [ ] All icon paths verified to exist
+- [ ] No console errors (ERR_FILE_NOT_FOUND, CSP violations)
+- [ ] No `alert()` or blocking dialogs in code
+- [ ] Submenus display vertically
+- [ ] Click-outside behavior works correctly
+- [ ] New features integrate with existing code
+- [ ] Script loading order preserved
+- [ ] CSS doesn't break existing layouts
+- [ ] Cross-component communication uses proper checks
+
+## Troubleshooting Common Issues
+
+### Issue: Icons not loading (404 errors)
+**Solution:** Check actual icon names in `icons/` directory
+```bash
+ls icons/ | grep "keyword"
+```
+
+### Issue: Fonts blocked by CSP
+**Solution:** Add `font-src` to CSP meta tag in index.html
+
+### Issue: Menus arranged horizontally
+**Solution:** Add `flex-direction: column` to submenu container CSS
+
+### Issue: Menus don't close when clicking outside
+**Solution:** Implement click-outside handler pattern (see above)
+
+### Issue: Integration between components fails
+**Solution:** Always check component existence with `if (WinOS && WinOS.components.X)`
+
+### Issue: Script load order errors
+**Solution:** Verify order in index.html matches dependency graph

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Windows 98 Desktop Clone</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src https://win98icons.alexmeub.com 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src https://win98icons.alexmeub.com 'self' data:; font-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
     <!-- Link to external CSS -->
     <link rel="stylesheet" href="css/win98.css">
 </head>
@@ -58,7 +58,7 @@
                     <span class="submenu-arrow">▶</span>
                 </div>
                 <div class="start-menu-item" data-action="help">
-                    <img src="icons/help_book-0.png" alt="Help">
+                    <img src="icons/help_book_small-0.png" alt="Help">
                     <span>Help</span>
                 </div>
                 <div class="start-menu-item" data-action="run">
@@ -67,7 +67,7 @@
                 </div>
                 <div class="start-menu-separator"></div>
                 <div class="start-menu-item" data-action="shutdown">
-                    <img src="icons/shut_down-0.png" alt="Shut Down">
+                    <img src="icons/shut_down_normal-0.png" alt="Shut Down">
                     <span>Shut Down...</span>
                 </div>
             </div>
@@ -77,24 +77,24 @@
     <!-- Desktop Context Menu (initially hidden) -->
     <div id="desktop-context-menu" class="context-menu" style="display: none;">
         <div class="context-menu-item" data-action="view">
-            <img src="icons/view_details-0.png" alt="View">
+            <img src="icons/appwizard_list.png" alt="View">
             <span>View</span>
         </div>
         <div class="context-menu-item" data-action="arrange">
-            <img src="icons/align_centered-0.png" alt="Arrange Icons">
+            <img src="icons/directory_closed-1.png" alt="Arrange Icons">
             <span>Arrange Icons</span>
         </div>
         <div class="context-menu-item" data-action="lineUp">
-            <img src="icons/align_horizontally-0.png" alt="Line Up Icons">
+            <img src="icons/directory_closed-1.png" alt="Line Up Icons">
             <span>Line Up Icons</span>
         </div>
         <div class="context-menu-separator"></div>
         <div class="context-menu-item" data-action="paste">
-            <img src="icons/paste-0.png" alt="Paste">
+            <img src="icons/document-0.png" alt="Paste">
             <span>Paste</span>
         </div>
         <div class="context-menu-item" data-action="pasteShortcut">
-            <img src="icons/paste_shortcut-0.png" alt="Paste Shortcut">
+            <img src="icons/document-0.png" alt="Paste Shortcut">
             <span>Paste Shortcut</span>
         </div>
         <div class="context-menu-separator"></div>
@@ -104,7 +104,7 @@
         </div>
         <div class="context-menu-separator"></div>
         <div class="context-menu-item" data-action="properties">
-            <img src="icons/properties-0.png" alt="Properties">
+            <img src="icons/display_properties-0.png" alt="Properties">
             <span>Properties</span>
         </div>
     </div>
@@ -161,6 +161,10 @@
     <!-- Window System (Core first, then modules) -->
     <script src="js/windows/core.js"></script>
     <script src="js/windows/apps.js"></script>
+    <script src="js/windows/explorer.js"></script>
+
+    <!-- Control Panel -->
+    <script src="js/components/controlPanel/display.js"></script>
 
     <!-- Components -->
     <script src="js/components/desktop.js"></script>
